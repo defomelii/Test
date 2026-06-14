@@ -346,10 +346,7 @@ if IsGame then
     local DisabledColliders = {}
     local AutoSkillcheckEnabled = false
     local AutoBarnabyEnabled = false
-
-    -- For remote hook
-    local originalOnClientInvoke = nil
-    local skillCheckRemote = nil
+    local SkillCheckHooked = false
 
     local AssetsFolder = workspace:FindFirstChild("GigiHubAssets")
     if not AssetsFolder then
@@ -358,7 +355,7 @@ if IsGame then
         AssetsFolder.Parent = workspace
     end
 
-    -- ESP helper functions
+    -- ESP helper functions (unchanged)
     local function getCleanMonsterName(model)
         return string.gsub(model.Name, "Monster", "")
     end
@@ -649,48 +646,29 @@ if IsGame then
         table.clear(DisabledColliders)
     end
 
-    -- ================== REMOTE HOOK FOR AUTO SKILLCHECK ==================
-    local function findSkillCheckRemote()
+    -- ================== PERMANENT AUTO SKILLCHECK (OPTION 1) ==================
+    local function hookSkillCheckRemote()
+        if SkillCheckHooked then return true end
         local events = ReplicatedStorage:FindFirstChild("Events")
-        if not events then return nil end
+        if not events then return false end
+        local remote = nil
         for _, obj in ipairs(events:GetChildren()) do
             if obj:IsA("RemoteFunction") and obj.Name:lower():find("skill") then
-                return obj
+                remote = obj
+                break
             end
         end
-        return nil
-    end
-
-    local function enableAutoSkillcheck()
-        if skillCheckRemote and originalOnClientInvoke then return end -- already enabled
-        skillCheckRemote = findSkillCheckRemote()
-        if not skillCheckRemote then
-            Fluent:Notify({ Title = "Error", Content = "SkillCheck remote not found!", Duration = 3 })
-            return
-        end
-        originalOnClientInvoke = skillCheckRemote.OnClientInvoke
-        skillCheckRemote.OnClientInvoke = function(...)
-            -- Immediately return a perfect result based on the type
+        if not remote then return false end
+        remote.OnClientInvoke = function(...)
             local args = {...}
-            -- args[1] is the command ("cancel", "complete", etc.)
-            -- args[2] might be a table with type
             if type(args[2]) == "table" and args[2].type then
-                -- treadmill or circle
-                return true
+                return true   -- treadmill / circle success
             else
-                -- horizontal
-                return "supercomplete"
+                return "supercomplete"  -- horizontal perfect
             end
         end
-        Fluent:Notify({ Title = "Auto Skillcheck", Content = "Remote hooked! Perfect skillchecks active.", Duration = 2 })
-    end
-
-    local function disableAutoSkillcheck()
-        if skillCheckRemote and originalOnClientInvoke then
-            skillCheckRemote.OnClientInvoke = originalOnClientInvoke
-            originalOnClientInvoke = nil
-            skillCheckRemote = nil
-        end
+        SkillCheckHooked = true
+        return true
     end
 
     -- Auto Barnaby: spam jump
@@ -705,14 +683,14 @@ if IsGame then
         end
     end
 
-    -- Main loop (only Barnaby needs RenderStepped; skillcheck is event-driven now)
+    -- Main loop (Barnaby only; skillcheck is event-driven)
     RunService.RenderStepped:Connect(function()
         if AutoBarnabyEnabled then
             autoPlayBarnaby()
         end
     end)
 
-    -- Monitor for skillCheckRemote changes (if the game recreates it)
+    -- Monitor for room changes
     workspace.ChildAdded:Connect(function(child)
         if child.Name == "CurrentRoom" then task.wait(0.1) processESP() monitorCurrentRoom(child) end
     end)
@@ -730,6 +708,7 @@ if IsGame then
         if #ActiveBillboards > 0 then updateBillboardPositions() end
     end)
 
+    -- UI sections
     GeneratorSection:AddToggle("GeneratorESP", { Title = "Enable Generator ESP", Description = "Highlights all generators", Default = false, Callback = function(value) GeneratorESPEnabled = value fullRefresh() end })
     GeneratorSection:AddColorpicker("GeneratorColor", { Title = "Generator Color", Default = GeneratorColor, Callback = function(value) GeneratorColor = value fullRefresh() end })
 
@@ -888,16 +867,22 @@ if IsGame then
         end
     end })
 
+    -- Auto Skillcheck toggle (permanent once enabled)
     AutoSkillcheckSection:AddToggle("AutoSkillcheckToggle", { 
         Title = "Auto Complete Skillchecks", 
-        Description = "Instantly passes all minigames by hooking the remote", 
+        Description = "Permanently hooks the remote – cannot be undone until rejoin. Instantly passes all minigames.", 
         Default = false, 
         Callback = function(value)
             AutoSkillcheckEnabled = value
             if value then
-                enableAutoSkillcheck()
+                local success = hookSkillCheckRemote()
+                if success then
+                    Fluent:Notify({ Title = "Auto Skillcheck", Content = "Remote hooked! Perfect skillchecks active.", Duration = 2 })
+                else
+                    Fluent:Notify({ Title = "Error", Content = "Skillcheck remote not found. Try again later.", Duration = 3 })
+                end
             else
-                disableAutoSkillcheck()
+                Fluent:Notify({ Title = "Warning", Content = "Cannot unhook remote. Rejoin to disable.", Duration = 3 })
             end
         end 
     })
