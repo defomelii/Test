@@ -1,1 +1,926 @@
-local v0=game:GetService("Players");local v1=game:GetService("ReplicatedStorage");local v2=game:GetService("RunService");local v3=game:GetService("UserInputService");local v4=v0.LocalPlayer;local v5=v4:WaitForChild("PlayerGui");local v6=game.PlaceId;local v7=v6==(16116270544 -(53 + 267)) ;local v8=v6==(16552821455 -0) ;local v9="";if v7 then v9=" [Lobby]";elseif v8 then v9=" [Game]";end local v10=loadstring(game:HttpGet("https://github.com/dawid-scripts/Fluent/releases/latest/download/main.lua"))();local v11=v10:CreateWindow({Title="Gigi's World HUB"   .. v9 ,SubTitle="by Gigi",TabWidth=1142 -(18 + 964) ,Size=UDim2.fromOffset(2183 -1603 ,267 + 193 ),Acrylic=false,Theme="Dark",MinimizeKey=Enum.KeyCode.LeftControl});local v12={};if v7 then v12.Client=v11:AddTab({Title="Client",Icon="user"});elseif v8 then v12.ESP=v11:AddTab({Title="ESP",Icon="eye"});v12.Player=v11:AddTab({Title="Player",Icon="user"});else v12.Client=v11:AddTab({Title="Client",Icon="user"});end task.wait(0.1);if v7 then if v12.Client then v11:SelectTab(v12.Client);end local v14=v12.Client:AddSection("Visual Unlocking");local v15=false;local v16=false;local v17;local v18;local v19;local v20;local v21;local v22;local v23;local v24;local v25;local v26={};local v27={};local v28={};local v29=function() end;local v30=nil;local v31=nil;local function v32() local v113=0 + 0 ;while true do if (v113==(850 -(20 + 830))) then local v288=0 + 0 ;while true do if (v288==(126 -(116 + 10))) then v17=v17 or v5:FindFirstChild("MainGui") ;return v17;end end end end end local function v33() local v114=0 + 0 ;local v115;while true do local v251=738 -(542 + 196) ;while true do if (v251==(0 -0)) then if (v114==(1 + 1)) then return v18:FindFirstChild("ScrollingFrame");end if (v114==1) then v18=v115:FindFirstChild("CharacterFrame");if  not v18 then return nil;end v114=2 + 0 ;end v251=1 + 0 ;end if (v251==1) then if (v114==(0 -0)) then v115=v32();if  not v115 then return nil;end v114=2 -1 ;end break;end end end end local function v34() local v116=0;local v117;while true do local v252=1551 -(1126 + 425) ;while true do if (v252==(406 -(118 + 287))) then if (v116==(11 -8)) then return v21~=nil ;end if ((1122 -(118 + 1003))==v116) then v18=v117:FindFirstChild("CharacterFrame");v19=v117:FindFirstChild("SkinFrame");v116=2;end break;end if (v252==(0 -0)) then if (v116==2) then if ( not v18 or  not v19) then return false;end v21=v19:FindFirstChild("SkinHolderFrame");v116=3;end if (v116==(377 -(142 + 235))) then v117=v32();if  not v117 then return false;end v116=1;end v252=4 -3 ;end end end end local function v35(v118) local v119=0;while true do if ((1 + 0)==v119) then v118.Active=true;if v26[v118] then v26[v118]:Disconnect();end v119=979 -(553 + 424) ;end if (v119==(3 -1)) then v26[v118]=v118:GetPropertyChangedSignal("Visible"):Connect(function() if (v15 and v118.Parent and  not v118.Visible) then v118.Visible=true;end end);break;end if (v119==0) then if ( not v118:IsA("GuiButton") or (v118.Name=="Template")) then return;end v118.Visible=true;v119=1 + 0 ;end end end local function v36() v20=v33();if  not v20 then return;end for v253,v254 in ipairs(v20:GetChildren()) do v35(v254);end end local function v37() if v15 then return;end v15=true;v36();if  not v20 then local v273=0 + 0 ;local v274;while true do if (v273==(0 + 0)) then v274=0;while true do if (v274==(0 + 0)) then v15=false;v10:Notify({Title="Error",Content="Character scrolling frame not found",Duration=3 + 1 });v274=2 -1 ;end if (v274==(2 -1)) then return;end end break;end end end if v22 then v22:Disconnect();end v22=v20.ChildAdded:Connect(function(v255) task.defer(function() v35(v255);end);end);v10:Notify({Title="Toon Visuals",Content="All toon buttons are being forced visible",Duration=6 -3 });end local function v38() local v120=0 + 0 ;local v121;while true do if (v120==(4 -3)) then return v1:FindFirstChild("SkinData") or v1:FindFirstChild("Skins") or v1:FindFirstChild("SkinModules") ;end if (0==v120) then v121=v1:FindFirstChild("SharedData");if v121 then local v344=0;local v345;while true do if (v344==(753 -(239 + 514))) then v345=v121:FindFirstChild("SkinData");if v345 then return v345;end break;end end end v120=1;end end end local function v39() local v122=v38();if  not v122 then return false;end table.clear(v27);for v256,v257 in ipairs(v122:GetChildren()) do if v257:IsA("Folder") then for v325,v326 in ipairs(v257:GetChildren()) do if v326:IsA("ModuleScript") then table.insert(v27,{name=v326.Name,character=v257.Name});end end end end return  #v27>(0 + 0) ;end local function v40() local v123=0;local v124;local v125;while true do if (v123==(1329 -(797 + 532))) then if  not v18 then return nil;end v124=v18:FindFirstChild("DescribeFrame");v123=1 + 0 ;end if (v123==2) then if ( not v125 or (v125=="None")) then return nil;end return v125;end if (v123==1) then if  not v124 then return nil;end v125=v124:GetAttribute("TowerValue");v123=1 + 1 ;end end end local function v41() local v126=0;local v127;while true do if ((0 -0)==v126) then v127=0;while true do if (v127==(1202 -(373 + 829))) then if  not v21 then return;end for v383,v384 in ipairs(v21:GetChildren()) do if (v384:IsA("GuiButton") and (v384.Name~="Template") and (v384.Name~="Default")) then v384:Destroy();end end break;end end break;end end end local function v42(v128,v129) if  not v31 then return nil;end if  not v28[v128] then v28[v128]={};end if v28[v128][v129] then return v28[v128][v129];end local v130,v131=pcall(function() return v31:InvokeServer(v128,v129);end);if (v130 and v131) then local v276=0;while true do if (v276==0) then v28[v128][v129]=v131:Clone();return v28[v128][v129];end end end return nil;end local function v43(v132,v133) local v134=v28[v132] and v28[v132][v133] ;if  not v134 then v134=v42(v132,v133);end if v134 then local v277=0;local v278;local v279;local v280;while true do if (v277==3) then return true;end if (v277==(732 -(476 + 255))) then v279=v134:Clone();v279.Parent=v278;v277=1132 -(369 + 761) ;end if (v277==0) then v278=workspace:FindFirstChild("Character");if v278 then v278:ClearAllChildren();else local v385=0 + 0 ;while true do if (v385==(1 -0)) then v278.Parent=workspace;break;end if (v385==(0 -0)) then v278=Instance.new("Model");v278.Name="Character";v385=1;end end end v277=239 -(64 + 174) ;end if (v277==2) then v280=workspace:FindFirstChild("MasteryPosition");if v280 then local v386=0;local v387;local v388;local v389;while true do if (v386==0) then v387=v279:WaitForChild("Humanoid");v388=v387:LoadAnimation(v279.Animations.Idle);v386=1;end if (v386==2) then v279:PivotTo(v280.CFrame * v389 );v388:Play();break;end if (v386==(1 + 0)) then local v427=0;while true do if ((0 -0)==v427) then v389=CFrame.new(0,(v279.PrimaryPart.Size.Y/(338 -(144 + 192))) + v387.HipHeight ,216 -(42 + 174) );v279.PrimaryPart.Anchored=true;v427=1;end if (v427==1) then v386=2 + 0 ;break;end end end end end v277=3 + 0 ;end end end return false;end local function v44(v135,v136) local v137=0 + 0 ;local v138;while true do if (v137==(1504 -(363 + 1141))) then if v30 then v30:FireServer(v136,v135);end if v19 then v19.Visible=false;end v137=1;end if ((1581 -(1183 + 397))==v137) then v138=v32();if v138 then local v349=0 -0 ;local v350;local v351;while true do if (v349==1) then if v350 then v350.Visible=true;end if v351 then v351.Visible=true;end break;end if (v349==(0 + 0)) then v350=v138:FindFirstChild("Menu");v351=v138:FindFirstChild("Info");v349=1 + 0 ;end end end break;end end end local function v45() if  not v34() then return;end local v139=v40();if  not v139 then return;end local v140=v21:FindFirstChild("Template");if  not v140 then return;end v41();local v141=v21:FindFirstChild("Default");if v141 then local v281=1975 -(1913 + 62) ;while true do if ((1 + 0)==v281) then v141.LayoutOrder=0 -0 ;break;end if (v281==(1933 -(565 + 1368))) then v141.Visible=true;v141.Active=true;v281=1;end end end local v142=3 -2 ;for v258,v259 in ipairs(v27) do if (v259.character==v139) then local v292=0;local v293;local v294;while true do if (v292==2) then v294=v293:FindFirstChild("CharacterName");if v294 then v294.Text=v259.name;end v293.Activated:Connect(function() task.spawn(function() local v407=1661 -(1477 + 184) ;local v408;while true do if (v407==(1 -0)) then v408=v19:FindFirstChild("ConfirmSkin");if v408 then local v439=0 + 0 ;local v440;while true do if (v439==(856 -(564 + 292))) then v440=0 -0 ;while true do if (0==v440) then if v25 then v25:Disconnect();end v408.Visible=true;v440=2 -1 ;end if (v440==(305 -(244 + 60))) then v25=v408.Activated:Connect(function() v44(v139,v259.name);end);break;end end break;end end end break;end if (v407==(0 + 0)) then v42(v139,v259.name);v43(v139,v259.name);v407=477 -(41 + 435) ;end end end);end);v292=3;end if (v292==(1002 -(938 + 63))) then v293.Active=true;v293.LayoutOrder=v142;v293:SetAttribute("TowerValue",v139);v292=2;end if (v292==(0 + 0)) then v293=v140:Clone();v293.Name=v259.name;v293.Visible=true;v292=1126 -(936 + 189) ;end if (v292==3) then v293.Parent=v21;v142+=1 break;end end end end end local function v46() if v16 then return;end if  not v34() then local v282=0;while true do if (v282==(0 + 0)) then v10:Notify({Title="Error",Content="Skin UI not found",Duration=1617 -(1565 + 48) });return;end end end local v143=v1:FindFirstChild("Events");if v143 then v30=v143:FindFirstChild("SkinChangeEvent");v31=v143:FindFirstChild("CreateTowerClone");end local v144=v32();if v144 then local v283=0;local v284;while true do if (v283==(0 + 0)) then v284=v144:FindFirstChild("Modules");if v284 then local v390=1138 -(782 + 356) ;local v391;while true do if (v390==(267 -(176 + 91))) then v391=v284:FindFirstChild("PlaySound");if v391 then pcall(function() v29=require(v391).Play;end);end break;end end end break;end end end if  not v39() then v10:Notify({Title="Error",Content="No skin folder/modules found",Duration=4});return;end v16=true;if v23 then v23:Disconnect();end v23=v19:GetPropertyChangedSignal("Visible"):Connect(function() if (v16 and v19.Visible) then task.defer(v45);end end);local v145=v18:FindFirstChild("DescribeFrame");if v145 then if v24 then v24:Disconnect();end v24=v145:GetAttributeChangedSignal("TowerValue"):Connect(function() if (v16 and v19.Visible) then task.defer(v45);end end);end if v19.Visible then v45();end v10:Notify({Title="Skin Visuals",Content="Skin preview and equip enabled",Duration=7 -4 });end v14:AddButton({Title="Activate Toon Visuals",Description="Forces toon buttons visible on the client",Callback=v37});v14:AddButton({Title="Activate Skin Visuals",Description="Adds skin buttons with preview & equip",Callback=v46});end if v8 then v11:SelectTab(v12.ESP);local v47=v12.ESP:AddSection("Generator ESP");local v48=v12.ESP:AddSection("Monster ESP");local v49=v12.ESP:AddSection("Item ESP");local v50=v12.Player:AddSection("Speed Modifier");local v51=v12.Player:AddSection("Noclip");local v52=v12.Player:AddSection("Auto Skillcheck");local v53=false;local v54=false;local v55=false;local v56=true;local v57=true;local v58=0.5 -0 ;local v59=Color3.fromRGB(1092 -(975 + 117) ,2130 -(157 + 1718) ,207 + 48 );local v60=Color3.fromRGB(255,177 -127 ,170 -120 );local v61=Color3.fromRGB(255,1118 -(697 + 321) ,100);local v62=Color3.fromRGB(694 -439 ,539 -284 ,0);local v63=Color3.fromRGB(255,587 -332 ,100);local v64=Color3.fromRGB(0 + 0 ,477 -222 ,0 -0 );local v65=Color3.fromRGB(1327 -(322 + 905) ,866 -(602 + 9) ,1289 -(449 + 740) );local v66={};local v67={};local v68=false;local v69=nil;local v70={};local v71=false;local v72=false;local v73=workspace:FindFirstChild("GigiHubAssets");if  not v73 then v73=Instance.new("Folder");v73.Name="GigiHubAssets";v73.Parent=workspace;end local function v74(v146) return string.gsub(v146.Name,"Monster","");end local function v75(v147) local v148=0;local v149;local v150;local v151;while true do if (v148==(875 -(826 + 46))) then return math.min(v151,v147:GetPivot().Position.Y + (957 -(245 + 702)) );end if (v148==(0 -0)) then v149=v147:FindFirstChildOfClass("Humanoid");v150=v147:FindFirstChild("HumanoidRootPart");v148=1;end if ((1 + 1)==v148) then for v327,v328 in ipairs(v147:GetDescendants()) do if (v328:IsA("BasePart") and (v328.Transparency<(1899 -(260 + 1638))) and (v328.Name~="HumanoidRootPart")) then local v371=0;local v372;while true do if ((440 -(382 + 58))==v371) then v372=(v328.CFrame * CFrame.new(0 -0 ,v328.Size.Y/(2 + 0) ,0 -0 )).Position;if (v372.Y>v151) then v151=v372.Y;end break;end end end end if (v151== -math.huge) then return v147:GetPivot().Position.Y + (8 -5) ;end v148=3;end if (v148==(1206 -(902 + 303))) then if v150 then local v355=0 -0 ;local v356;local v357;while true do if (v355==(2 -1)) then return v356 + v357 + 1 ;end if (v355==(0 + 0)) then v356=v150.Position.Y;v357=(v149 and v149.HipHeight) or (1693 -(1121 + 569)) ;v355=1;end end end v151= -math.huge;v148=216 -(22 + 192) ;end end end local function v76(v152,v153,v154) local v155=0;local v156;local v157;local v158;local v159;while true do if (v155==(684 -(483 + 200))) then v156.AlwaysOnTop=true;v156.MaxDistance=math.huge;v157=Instance.new("TextLabel");v157.Size=UDim2.new(1464 -(1404 + 59) ,0 -0 ,1,0 -0 );v155=767 -(468 + 297) ;end if (2==v155) then v157.BackgroundTransparency=563 -(334 + 228) ;v157.Text=v153;v157.TextColor3=v154 or Color3.fromRGB(860 -605 ,255,591 -336 ) ;v157.TextStrokeTransparency=0 -0 ;v155=1 + 2 ;end if (v155==(240 -(141 + 95))) then v156.Parent=v73;v158=v75(v152);v159=v152:GetPivot().Position;v156.StudsOffset=Vector3.new(0 + 0 ,(v158-v159.Y) + (2 -1) ,0 -0 );v155=2 + 3 ;end if (v155==(0 -0)) then v156=Instance.new("BillboardGui");v156.Name="NameTag";v156.Adornee=v152;v156.Size=UDim2.new(5 + 1 ,0,1.5 + 0 ,0 -0 );v155=1 + 0 ;end if (v155==(168 -(92 + 71))) then return v156;end if (v155==(2 + 1)) then v157.TextStrokeColor3=Color3.fromRGB(0,0,0);v157.Font=Enum.Font.FredokaOne;v157.TextSize=53 -21 ;v157.Parent=v156;v155=769 -(574 + 191) ;end end end local function v77() for v262= #v67,1, -(1 + 0) do local v263=0 -0 ;local v264;while true do if (v263==(0 + 0)) then v264=v67[v262];if (v264 and v264.Parent and v264.Adornee and v264.Adornee.Parent) then local v373=849 -(254 + 595) ;local v374;local v375;local v376;while true do if (v373==(126 -(55 + 71))) then v374=v264.Adornee;v375=v75(v374);v373=1 -0 ;end if (v373==1) then v376=v374:GetPivot().Position;v264.StudsOffset=Vector3.new(1790 -(573 + 1217) ,(v375-v376.Y) + (2 -1) ,0);break;end end else local v377=0 + 0 ;while true do if (v377==0) then if (v264 and v264.Parent) then v264:Destroy();end table.remove(v67,v262);break;end end end break;end end end end local function v78(v160,v161) local v162=0;local v163;while true do if (v162==4) then return v163;end if (v162==1) then v163.FillColor=v161;v163.FillTransparency=v58;v162=2 -0 ;end if (v162==3) then v163.Adornee=v160;v163.Parent=v73;v162=943 -(714 + 225) ;end if (v162==(5 -3)) then v163.OutlineColor=Color3.fromRGB(355 -100 ,28 + 227 ,368 -113 );v163.OutlineTransparency=806 -(118 + 688) ;v162=51 -(25 + 23) ;end if (v162==(0 + 0)) then v163=Instance.new("Highlight");v163.Name="ESP_Highlight";v162=1887 -(927 + 959) ;end end end local function v79() local v164=0 -0 ;while true do if (v164==0) then for v330,v331 in ipairs(v66) do if (v331 and v331.Parent) then v331:Destroy();end end table.clear(v66);v164=733 -(16 + 716) ;end if (v164==(1 -0)) then for v332,v333 in ipairs(v67) do if (v333 and v333.Parent) then v333:Destroy();end end table.clear(v67);break;end end end local function v80(v165) local v166=0;while true do if (0==v166) then local v321=97 -(11 + 86) ;while true do if (v321==(0 -0)) then if (v165.Name=="ResearchCapsule") then local v410=285 -(175 + 110) ;local v411;while true do if (v410==(0 -0)) then v411=v165:FindFirstChild("Prompt");if v411 then local v442=v411:FindFirstChild("Monster");if (v442 and v442:IsA("StringValue")) then return "Research - "   .. string.gsub(v442.Value,"Monster","") ;end end break;end end end return v165.Name;end end end end end local function v81() local v167=0 -0 ;local v168;while true do if (v167==(1796 -(503 + 1293))) then v168=workspace:FindFirstChild("CurrentRoom");if  not v168 then return;end v167=2 -1 ;end if (v167==1) then for v334,v335 in ipairs(v168:GetChildren()) do if v335:IsA("Model") then if v53 then local v412=0;local v413;while true do if (0==v412) then v413=v335:FindFirstChild("Generators");if v413 then for v446,v447 in ipairs(v413:GetChildren()) do if v447:IsA("Model") then local v453=0 + 0 ;local v454;while true do if (v453==(1062 -(810 + 251))) then if  not v454 then table.insert(v66,v78(v447,v59));end break;end if (v453==0) then v454=false;for v463,v464 in ipairs(v66) do if (v464 and (v464.Adornee==v447)) then v454=true;break;end end v453=1 + 0 ;end end end end end break;end end end if v54 then local v414=v335:FindFirstChild("Monsters");if v414 then for v433,v434 in ipairs(v414:GetChildren()) do if v434:IsA("Model") then local v443=0;local v444;while true do if (v443==(0 + 0)) then v444=false;for v457,v458 in ipairs(v66) do if (v458 and (v458.Adornee==v434)) then v444=true;break;end end v443=1 + 0 ;end if ((534 -(43 + 490))==v443) then if  not v444 then table.insert(v66,v78(v434,v60));if v56 then table.insert(v67,v76(v434,v74(v434),v61));end end break;end end end end end end if v55 then local v415=733 -(711 + 22) ;local v416;while true do if (v415==(0 -0)) then v416=v335:FindFirstChild("Items");if v416 then for v448,v449 in ipairs(v416:GetChildren()) do if v449:IsA("Model") then local v455=0;local v456;while true do if (1==v455) then if  not v456 then local v466=v80(v449);local v467=v62;local v468=v63;if (v449.Name=="ResearchCapsule") then v467=v64;v468=v65;end table.insert(v66,v78(v449,v467));if v57 then table.insert(v67,v76(v449,v466,v468));end end break;end if (v455==0) then local v460=859 -(240 + 619) ;while true do if (v460==(0 + 0)) then v456=false;for v471,v472 in ipairs(v66) do if (v472 and (v472.Adornee==v449)) then v456=true;break;end end v460=1 -0 ;end if (v460==(1 + 0)) then v455=1745 -(1344 + 400) ;break;end end end end end end end break;end end end end end break;end end end local function v82() local v169=405 -(255 + 150) ;local v170;while true do if (v169==(0 + 0)) then v170=0;while true do if (v170==(0 + 0)) then v79();v81();break;end end break;end end end local function v83() for v265,v266 in ipairs(v66) do if (v266 and v266.Parent) then v266.FillTransparency=v58;end end end local function v84(v171) local v172=0;local v173;while true do if (v172==0) then v173=0 -0 ;while true do if (v173==(3 -2)) then v171.ChildRemoved:Connect(function(v392) if v392:IsA("Model") then v82();end end);break;end if (v173==(1739 -(404 + 1335))) then if  not v171 then return;end v171.ChildAdded:Connect(function(v393) if v393:IsA("Model") then local v423=406 -(183 + 223) ;while true do if (v423==(0 -0)) then task.wait(0.1 + 0 );v81();break;end end end end);v173=1;end end break;end end end local function v85(v174) local v175=0 + 0 ;local v176;while true do if (v175==0) then v176=337 -(10 + 327) ;while true do if (v176==1) then v174.ChildRemoved:Connect(function(v394) if ((v394.Name=="Generators") or (v394.Name=="Monsters") or (v394.Name=="Items")) then v82();end end);for v395,v396 in ipairs({"Generators","Monsters","Items"}) do local v397=0;local v398;while true do if ((449 -(108 + 341))==v397) then v398=v174:FindFirstChild(v396);if v398 then v84(v398);end break;end end end break;end if (v176==(0 + 0)) then if  not v174 then return;end v174.ChildAdded:Connect(function(v399) if ((v399.Name=="Generators") or (v399.Name=="Monsters") or (v399.Name=="Items")) then task.wait(0.1);v81();v84(v399);end end);v176=1;end end break;end end end local function v86(v177) local v178=0;while true do if (v178==(4 -3)) then v177.ChildRemoved:Connect(function(v336) if v336:IsA("Model") then v82();end end);for v337,v338 in ipairs(v177:GetChildren()) do if v338:IsA("Model") then v85(v338);end end break;end if (v178==0) then if  not v177 then return;end v177.ChildAdded:Connect(function(v339) if v339:IsA("Model") then local v378=1493 -(711 + 782) ;while true do if ((1 -0)==v378) then v85(v339);break;end if (v378==(469 -(270 + 199))) then task.wait(0.1);v81();v378=1 + 0 ;end end end end);v178=1820 -(580 + 1239) ;end end end local function v87(v179) local v180=0;while true do if (v180==(0 -0)) then if (v179:IsA("BasePart") and ((v179.Name=="NoClip") or (v179.Name=="CylinderCollider") or (v179.Name=="NoClip_Collider"))) then return true;end if (v179:IsA("Model") and ((v179.Name=="Wall") or (v179.Name=="ShortWall") or (v179.Name=="WindowWall"))) then return true;end v180=1;end if (v180==(1 + 0)) then return false;end end end local function v88(v181) if v87(v181) then if (v181:IsA("BasePart") and v181.CanCollide) then local v340=0 + 0 ;while true do if (v340==0) then v181.CanCollide=false;table.insert(v70,v181);break;end end elseif v181:IsA("Model") then for v401,v402 in ipairs(v181:GetDescendants()) do if (v402:IsA("BasePart") and v402.CanCollide) then local v424=0 + 0 ;while true do if (v424==(0 -0)) then v402.CanCollide=false;table.insert(v70,v402);break;end end end end end end end local function v89() for v267,v268 in ipairs(workspace:GetDescendants()) do v88(v268);end end local function v90() local v182=0;while true do if (v182==(1 + 0)) then v89();v69=v2.Stepped:Connect(function() if  not v68 then return;end v89();end);v182=1169 -(645 + 522) ;end if (v182==2) then workspace.DescendantAdded:Connect(function(v341) if v68 then local v379=0;while true do if (v379==0) then task.wait(1790.1 -(1010 + 780) );v88(v341);break;end end end end);break;end if (v182==0) then if v69 then v69:Disconnect();end table.clear(v70);v182=1 + 0 ;end end end local function v91() if v69 then local v285=0 -0 ;while true do if (v285==(0 -0)) then v69:Disconnect();v69=nil;break;end end end for v269,v270 in ipairs(v70) do if (v270 and v270.Parent) then v270.CanCollide=true;end end table.clear(v70);end local function v92() local v183=1836 -(1045 + 791) ;local v184;while true do if (v183==(0 -0)) then v184=v1:FindFirstChild("Events");if  not v184 then return;end v183=1 -0 ;end if (v183==(507 -(351 + 154))) then pcall(function() v184:FireServer("complete",{success=true});end);break;end if (v183==(1575 -(1281 + 293))) then v184=v184:FindFirstChild("SkillCheckEvent");if  not v184 then return;end v183=2;end end end local function v93() local v185=266 -(28 + 238) ;local v186;while true do if (v185==(2 -1)) then for v342,v343 in ipairs(v5:GetChildren()) do if v343:GetAttribute("BarnabyArcadeSession") then local v380=1559 -(1381 + 178) ;local v381;while true do if (v380==(0 + 0)) then v381=v343;if v381:FindFirstChild("GameWindow") then local v435=v381.GameWindow;local v436=v435:FindFirstChild("ViewportFrame");if (v436 and v436.CurrentCamera) then local v445=v436:FindFirstChild("WorldModel");if v445 then local v450=0 + 0 ;local v451;local v452;while true do if (v450==(0 + 0)) then v451=nil;v452={};v450=3 -2 ;end if (v450==(1 + 0)) then for v461,v462 in ipairs(v445:GetChildren()) do if v462:IsA("Model") then if (v462:FindFirstChild("Barnaby") or v462.Name:find("Fish")) then v451=v462;elseif (v462.Name:find("Obstacle") or v462.Name:find("Seaweed")) then table.insert(v452,v462);end end end if (v451 and v451.PrimaryPart) then local v465=v451.PrimaryPart.Position.Y;for v469,v470 in ipairs(v452) do if v470.PrimaryPart then local v473=v470.PrimaryPart.Position.X;if (math.abs(v473)<(480 -(381 + 89))) then local v474=0;local v475;while true do if (v474==(0 + 0)) then v475=v470:GetAttribute("GapY");if v475 then if (v465<(v475-3)) then firesignal(v435.Mobile.MouseButton1Down);end end break;end end end end end end break;end end end end end break;end end end end break;end if (v185==0) then v186=v5:FindFirstChild("MainGui");if  not v186 then return;end v185=1 + 0 ;end end end v2.RenderStepped:Connect(function() local v187=0;while true do if (v187==(0 -0)) then if v71 then v92();end if v72 then v93();end break;end end end);workspace.ChildAdded:Connect(function(v188) if (v188.Name=="CurrentRoom") then local v286=1156 -(1074 + 82) ;while true do if (v286==(0 -0)) then task.wait(1784.1 -(214 + 1570) );v81();v286=1456 -(990 + 465) ;end if (v286==(1 + 0)) then v86(v188);break;end end end end);workspace.ChildRemoved:Connect(function(v189) if (v189.Name=="CurrentRoom") then v79();end end);local v94=workspace:FindFirstChild("CurrentRoom");if v94 then v86(v94);task.wait(0.1 + 0 );v81();end v2.Heartbeat:Connect(function() if ( #v67>(0 + 0)) then v77();end end);v2.RenderStepped:Connect(function() if ( #v67>0) then v77();end end);v47:AddToggle("GeneratorESP",{Title="Enable Generator ESP",Description="Highlights all generators",Default=false,Callback=function(v190) local v191=0;while true do if (v191==0) then v53=v190;v82();break;end end end});v47:AddColorpicker("GeneratorColor",{Title="Generator Color",Default=v59,Callback=function(v192) local v193=0 -0 ;while true do if ((1726 -(1668 + 58))==v193) then v59=v192;v82();break;end end end});v48:AddToggle("MonsterESP",{Title="Enable Monster ESP",Description="Highlights all monsters",Default=false,Callback=function(v194) local v195=626 -(512 + 114) ;while true do if (v195==0) then v54=v194;v82();break;end end end});v48:AddToggle("MonsterNametags",{Title="Show Nametags",Description="Show nametags above monsters",Default=true,Callback=function(v196) local v197=0 -0 ;while true do if (0==v197) then v56=v196;v82();break;end end end});v48:AddColorpicker("MonsterColor",{Title="Highlight Color",Default=v60,Callback=function(v198) local v199=0 -0 ;while true do if (v199==0) then v60=v198;v82();break;end end end});v48:AddColorpicker("MonsterNametagColor",{Title="Nametag Color",Default=v61,Callback=function(v200) local v201=0 -0 ;local v202;while true do if (v201==0) then v202=0 + 0 ;while true do if (v202==(0 + 0)) then v61=v200;v82();break;end end break;end end end});v49:AddToggle("ItemESP",{Title="Enable Item ESP",Description="Highlights all items",Default=false,Callback=function(v203) v55=v203;v82();end});v49:AddToggle("ItemNametags",{Title="Show Nametags",Description="Show nametags above items",Default=true,Callback=function(v204) v57=v204;v82();end});v49:AddColorpicker("ItemColor",{Title="Highlight Color",Default=v62,Callback=function(v205) local v206=0;while true do if (v206==(0 + 0)) then v62=v205;v82();break;end end end});v49:AddColorpicker("ItemNametagColor",{Title="Nametag Color",Default=v63,Callback=function(v207) v63=v207;v82();end});v49:AddColorpicker("ResearchColor",{Title="Research Capsule Color",Default=v64,Callback=function(v208) local v209=0;while true do if ((0 -0)==v209) then v64=v208;v82();break;end end end});v49:AddColorpicker("ResearchNametagColor",{Title="Research Nametag Color",Default=v65,Callback=function(v210) local v211=0;while true do if (v211==(1994 -(109 + 1885))) then v65=v210;v82();break;end end end});local v95=v12.ESP:AddSection("ESP Settings");v95:AddSlider("ESPTransparency",{Title="ESP Transparency",Description="Adjust highlight transparency",Default=0.5,Min=1469 -(1269 + 200) ,Max=1 -0 ,Rounding=1,Callback=function(v212) local v213=0;while true do if (v213==0) then v58=v212;v83();break;end end end});local v96=815 -(98 + 717) ;local v97=0;local v98=false;local v99=nil;local v100=false;local function v101() return v4.Character;end local function v102() local v214=826 -(802 + 24) ;local v215;while true do local v271=0 -0 ;while true do if (0==v271) then if ((0 -0)==v214) then v215=v101();if v215 then return v215:FindFirstChildOfClass("Humanoid");end v214=1 + 0 ;end if (v214==(1 + 0)) then return nil;end break;end end end end local function v103() local v216=0 + 0 ;local v217;local v218;local v219;while true do if ((1 + 1)==v216) then v219=v218:FindFirstChild(v217.Name);if  not v219 then return nil;end v216=8 -5 ;end if (3==v216) then return v219:FindFirstChild("Stats");end if (v216==0) then local v324=0 -0 ;while true do if (v324==(0 + 0)) then v217=v101();if  not v217 then return nil;end v324=1;end if (v324==(1 + 0)) then v216=1 + 0 ;break;end end end if (v216==(1 + 0)) then v218=workspace:FindFirstChild("InGamePlayers");if  not v218 then return nil;end v216=2;end end end local function v104() local v220=0 + 0 ;local v221;local v222;local v223;while true do local v272=1433 -(797 + 636) ;while true do if (0==v272) then if (v220==(0 -0)) then local v382=1619 -(1427 + 192) ;while true do if (v382==1) then v220=1 + 0 ;break;end if (0==v382) then v221=37 -21 ;v222=18 + 2 ;v382=1 + 0 ;end end end if (v220==(327 -(192 + 134))) then v223=v103();if v223 then local v417=v223:FindFirstChild("WalkSpeed");local v418=v223:FindFirstChild("RunSpeed");if (v417 and v417:IsA("NumberValue")) then v221=v417.Value;end if (v418 and v418:IsA("NumberValue")) then v222=v418.Value;end end v220=1278 -(316 + 960) ;end v272=1 + 0 ;end if (v272==1) then if (v220==(2 + 0)) then return v221,v222;end break;end end end end local function v105() local v224=0;local v225;local v226;local v227;local v228;local v229;while true do if (v224==2) then if  not v226 then return;end v227,v228=v104();v224=3;end if (v224==(0 + 0)) then v225=v102();if  not v225 then return;end v224=1;end if (v224==(11 -8)) then v229=v226:FindFirstChild("Sprinting");if (v229 and v229:IsA("BoolValue")) then v100=v229.Value;end v224=4;end if (v224==1) then if  not v98 then return;end v226=v103();v224=553 -(83 + 468) ;end if (v224==4) then if v100 then v225.WalkSpeed=v228 * ((1807 -(1202 + 604)) + v97) ;else v225.WalkSpeed=v227 * ((4 -3) + v96) ;end break;end end end local function v106() local v230=0 -0 ;local v231;local v232;local v233;local v234;local v235;local v236;while true do if (1==v230) then v232=v103();if  not v232 then return;end v230=5 -3 ;end if (v230==(328 -(45 + 280))) then v235=v232:FindFirstChild("Sprinting");v236=false;v230=4;end if (v230==(0 + 0)) then v231=v102();if  not v231 then return;end v230=1 + 0 ;end if ((2 + 2)==v230) then if (v235 and v235:IsA("BoolValue")) then v236=v235.Value;end if (v236 and v234 and v234:IsA("NumberValue")) then v231.WalkSpeed=v234.Value;elseif (v233 and v233:IsA("NumberValue")) then v231.WalkSpeed=v233.Value;end break;end if (v230==2) then v233=v232:FindFirstChild("WalkSpeed");v234=v232:FindFirstChild("RunSpeed");v230=2 + 1 ;end end end local function v107() local v237=0 + 0 ;while true do if (v237==0) then if v99 then v99:Disconnect();end v99=v2.Heartbeat:Connect(function() if v98 then v105();end end);break;end end end local function v108() if v99 then local v287=0;while true do if (0==v287) then v99:Disconnect();v99=nil;break;end end end end v4.CharacterAdded:Connect(function(v238) local v239=0 -0 ;while true do if (v239==0) then v100=false;if v98 then task.wait(0.5);v107();end break;end end end);v50:AddToggle("SpeedToggle",{Title="Enable Speed Modifier",Description="Toggle speed modification on/off",Default=false,Callback=function(v240) local v241=1911 -(340 + 1571) ;while true do if (v241==(0 + 0)) then v98=v240;if v240 then v107();else v108();v106();end break;end end end});local v109,v110=v104();v50:AddSlider("WalkSpeed",{Title="Walk Speed",Description="Base: "   .. string.format("%.1f",v109) ,Default=v109,Min=1772 -(1733 + 39) ,Max=v109 * (27 -17) ,Rounding=0,Callback=function(v242) v96=(v242-v109)/v109 ;end});v50:AddSlider("RunSpeed",{Title="Run Speed",Description="Base: "   .. string.format("%.1f",v110) ,Default=v110,Min=0,Max=v110 * 10 ,Rounding=1034 -(125 + 909) ,Callback=function(v243) v97=(v243-v110)/v110 ;end});v51:AddToggle("NoclipToggle",{Title="Enable Noclip",Description="Walk through specific walls and colliders",Default=false,Callback=function(v244) local v245=1948 -(1096 + 852) ;while true do if (v245==0) then v68=v244;if v244 then v90();else v91();end break;end end end});v52:AddToggle("AutoSkillcheckToggle",{Title="Auto Complete Skillchecks",Description="Automatically completes all skillcheck types instantly",Default=false,Callback=function(v246) v71=v246;end});v52:AddToggle("AutoBarnabyToggle",{Title="Auto Play Barnaby",Description="Automatically plays Barnaby minigame (auto jump, collect coins, never die)",Default=false,Callback=function(v247) v72=v247;end});end if ( not v7 and  not v8) then local v111=0 + 0 ;local v112;while true do if ((0 -0)==v111) then if v12.Client then v11:SelectTab(v12.Client);end v112=v12.Client:AddSection("Unknown Place");v111=1;end if (v111==(1 + 0)) then v112:AddParagraph({Title="Unknown Place",Content="This script is designed for specific places. Place ID: "   .. tostring(v6) });break;end end end v10:Notify({Title="Loaded",Content="Gigi's World HUB loaded for "   .. v9 ,Duration=3});
+local Players = game:GetService("Players")
+local ReplicatedStorage = game:GetService("ReplicatedStorage")
+local RunService = game:GetService("RunService")
+local UserInputService = game:GetService("UserInputService")
+
+local LocalPlayer = Players.LocalPlayer
+local PlayerGui = LocalPlayer:WaitForChild("PlayerGui")
+
+local CurrentPlaceId = game.PlaceId
+local IsLobby = (CurrentPlaceId == 16116270224)
+local IsGame = (CurrentPlaceId == 16552821455)
+
+local placeSuffix = ""
+if IsLobby then
+    placeSuffix = " [Lobby]"
+elseif IsGame then
+    placeSuffix = " [Game]"
+end
+
+local Fluent = loadstring(game:HttpGet("https://github.com/dawid-scripts/Fluent/releases/latest/download/main.lua"))()
+
+local Window = Fluent:CreateWindow({
+    Title = "Gigi's World HUB" .. placeSuffix,
+    SubTitle = "by Gigi",
+    TabWidth = 160,
+    Size = UDim2.fromOffset(580, 460),
+    Acrylic = false,
+    Theme = "Dark",
+    MinimizeKey = Enum.KeyCode.LeftControl
+})
+
+local Tabs = {}
+
+if IsLobby then
+    Tabs.Client = Window:AddTab({ Title = "Client", Icon = "user" })
+elseif IsGame then
+    Tabs.ESP = Window:AddTab({ Title = "ESP", Icon = "eye" })
+    Tabs.Player = Window:AddTab({ Title = "Player", Icon = "user" })
+else
+    Tabs.Client = Window:AddTab({ Title = "Client", Icon = "user" })
+end
+
+task.wait(0.1)
+
+if IsLobby then
+    if Tabs.Client then Window:SelectTab(Tabs.Client) end
+    
+    local ClientSection = Tabs.Client:AddSection("Visual Unlocking")
+
+    local isToonActivated = false
+    local isSkinActivated = false
+
+    local MainGui
+    local CharacterFrame
+    local SkinFrame
+    local characterScrollingFrame
+    local skinHolder
+
+    local toonConnection
+    local skinFrameConnection
+    local towerValueConnection
+    local confirmConnection
+
+    local buttonConnections = {}
+    local allSkins = {}
+    local modelCache = {}
+    local PlaySoundFunc = function() end
+
+    local SkinChangeEvent = nil
+    local CreateTowerClone = nil
+
+    local function getMainGui()
+        MainGui = MainGui or PlayerGui:FindFirstChild("MainGui")
+        return MainGui
+    end
+
+    local function getCharacterScrollingFrame()
+        local mainGui = getMainGui()
+        if not mainGui then return nil end
+        CharacterFrame = mainGui:FindFirstChild("CharacterFrame")
+        if not CharacterFrame then return nil end
+        return CharacterFrame:FindFirstChild("ScrollingFrame")
+    end
+
+    local function getSkinFrameParts()
+        local mainGui = getMainGui()
+        if not mainGui then return false end
+        CharacterFrame = mainGui:FindFirstChild("CharacterFrame")
+        SkinFrame = mainGui:FindFirstChild("SkinFrame")
+        if not CharacterFrame or not SkinFrame then return false end
+        skinHolder = SkinFrame:FindFirstChild("SkinHolderFrame")
+        return skinHolder ~= nil
+    end
+
+    local function forceButtonVisible(button)
+        if not button:IsA("GuiButton") or button.Name == "Template" then return end
+        button.Visible = true
+        button.Active = true
+        if buttonConnections[button] then buttonConnections[button]:Disconnect() end
+        buttonConnections[button] = button:GetPropertyChangedSignal("Visible"):Connect(function()
+            if isToonActivated and button.Parent and not button.Visible then
+                button.Visible = true
+            end
+        end)
+    end
+
+    local function forceShowAllToons()
+        characterScrollingFrame = getCharacterScrollingFrame()
+        if not characterScrollingFrame then return end
+        for _, child in ipairs(characterScrollingFrame:GetChildren()) do
+            forceButtonVisible(child)
+        end
+    end
+
+    local function activateToonUnlocker()
+        if isToonActivated then return end
+        isToonActivated = true
+        forceShowAllToons()
+        if not characterScrollingFrame then
+            isToonActivated = false
+            Fluent:Notify({ Title = "Error", Content = "Character scrolling frame not found", Duration = 4 })
+            return
+        end
+        if toonConnection then toonConnection:Disconnect() end
+        toonConnection = characterScrollingFrame.ChildAdded:Connect(function(child)
+            task.defer(function() forceButtonVisible(child) end)
+        end)
+        Fluent:Notify({ Title = "Toon Visuals", Content = "All toon buttons are being forced visible", Duration = 3 })
+    end
+
+    local function findSkinFolder()
+        local sharedData = ReplicatedStorage:FindFirstChild("SharedData")
+        if sharedData then
+            local skinData = sharedData:FindFirstChild("SkinData")
+            if skinData then return skinData end
+        end
+        return ReplicatedStorage:FindFirstChild("SkinData") or ReplicatedStorage:FindFirstChild("Skins") or ReplicatedStorage:FindFirstChild("SkinModules")
+    end
+
+    local function loadSkins()
+        local folder = findSkinFolder()
+        if not folder then return false end
+        table.clear(allSkins)
+        for _, characterFolder in ipairs(folder:GetChildren()) do
+            if characterFolder:IsA("Folder") then
+                for _, skinModule in ipairs(characterFolder:GetChildren()) do
+                    if skinModule:IsA("ModuleScript") then
+                        table.insert(allSkins, { name = skinModule.Name, character = characterFolder.Name })
+                    end
+                end
+            end
+        end
+        return #allSkins > 0
+    end
+
+    local function getCurrentCharacter()
+        if not CharacterFrame then return nil end
+        local describeFrame = CharacterFrame:FindFirstChild("DescribeFrame")
+        if not describeFrame then return nil end
+        local value = describeFrame:GetAttribute("TowerValue")
+        if not value or value == "None" then return nil end
+        return value
+    end
+
+    local function clearGeneratedSkinButtons()
+        if not skinHolder then return end
+        for _, child in ipairs(skinHolder:GetChildren()) do
+            if child:IsA("GuiButton") and child.Name ~= "Template" and child.Name ~= "Default" then
+                child:Destroy()
+            end
+        end
+    end
+
+    local function preloadSkin(character, skin)
+        if not CreateTowerClone then return nil end
+        if not modelCache[character] then modelCache[character] = {} end
+        if modelCache[character][skin] then return modelCache[character][skin] end
+        local success, model = pcall(function() return CreateTowerClone:InvokeServer(character, skin) end)
+        if success and model then
+            modelCache[character][skin] = model:Clone()
+            return modelCache[character][skin]
+        end
+        return nil
+    end
+
+    local function previewSkin(character, skin)
+        local model = modelCache[character] and modelCache[character][skin]
+        if not model then model = preloadSkin(character, skin) end
+        if model then
+            local workspaceChar = workspace:FindFirstChild("Character")
+            if workspaceChar then
+                workspaceChar:ClearAllChildren()
+            else
+                workspaceChar = Instance.new("Model")
+                workspaceChar.Name = "Character"
+                workspaceChar.Parent = workspace
+            end
+            local display = model:Clone()
+            display.Parent = workspaceChar
+            local MasteryPosition = workspace:FindFirstChild("MasteryPosition")
+            if MasteryPosition then
+                local Humanoid = display:WaitForChild("Humanoid")
+                local idleAnim = Humanoid:LoadAnimation(display.Animations.Idle)
+                local offset = CFrame.new(0, display.PrimaryPart.Size.Y / 2 + Humanoid.HipHeight, 0)
+                display.PrimaryPart.Anchored = true
+                display:PivotTo(MasteryPosition.CFrame * offset)
+                idleAnim:Play()
+            end
+            return true
+        end
+        return false
+    end
+
+    local function equipSkin(character, skin)
+        if SkinChangeEvent then SkinChangeEvent:FireServer(skin, character) end
+        if SkinFrame then SkinFrame.Visible = false end
+        local mainGui = getMainGui()
+        if mainGui then
+            local menu = mainGui:FindFirstChild("Menu")
+            local info = mainGui:FindFirstChild("Info")
+            if menu then menu.Visible = true end
+            if info then info.Visible = true end
+        end
+    end
+
+    local function createSkinButtons()
+        if not getSkinFrameParts() then return end
+        local currentCharacter = getCurrentCharacter()
+        if not currentCharacter then return end
+        local template = skinHolder:FindFirstChild("Template")
+        if not template then return end
+        clearGeneratedSkinButtons()
+        local defaultButton = skinHolder:FindFirstChild("Default")
+        if defaultButton then
+            defaultButton.Visible = true
+            defaultButton.Active = true
+            defaultButton.LayoutOrder = 0
+        end
+        local order = 1
+        for _, skinInfo in ipairs(allSkins) do
+            if skinInfo.character == currentCharacter then
+                local button = template:Clone()
+                button.Name = skinInfo.name
+                button.Visible = true
+                button.Active = true
+                button.LayoutOrder = order
+                button:SetAttribute("TowerValue", currentCharacter)
+                local label = button:FindFirstChild("CharacterName")
+                if label then label.Text = skinInfo.name end
+                button.Activated:Connect(function()
+                    task.spawn(function()
+                        preloadSkin(currentCharacter, skinInfo.name)
+                        previewSkin(currentCharacter, skinInfo.name)
+                        local confirmBtn = SkinFrame:FindFirstChild("ConfirmSkin")
+                        if confirmBtn then
+                            if confirmConnection then confirmConnection:Disconnect() end
+                            confirmBtn.Visible = true
+                            confirmConnection = confirmBtn.Activated:Connect(function()
+                                equipSkin(currentCharacter, skinInfo.name)
+                            end)
+                        end
+                    end)
+                end)
+                button.Parent = skinHolder
+                order += 1
+            end
+        end
+    end
+
+    local function activateSkinPreviewer()
+        if isSkinActivated then return end
+        if not getSkinFrameParts() then
+            Fluent:Notify({ Title = "Error", Content = "Skin UI not found", Duration = 4 })
+            return
+        end
+        local Events = ReplicatedStorage:FindFirstChild("Events")
+        if Events then
+            SkinChangeEvent = Events:FindFirstChild("SkinChangeEvent")
+            CreateTowerClone = Events:FindFirstChild("CreateTowerClone")
+        end
+        local mainGui = getMainGui()
+        if mainGui then
+            local Modules = mainGui:FindFirstChild("Modules")
+            if Modules then
+                local PlaySoundModule = Modules:FindFirstChild("PlaySound")
+                if PlaySoundModule then
+                    pcall(function() PlaySoundFunc = require(PlaySoundModule).Play end)
+                end
+            end
+        end
+        if not loadSkins() then
+            Fluent:Notify({ Title = "Error", Content = "No skin folder/modules found", Duration = 4 })
+            return
+        end
+        isSkinActivated = true
+        if skinFrameConnection then skinFrameConnection:Disconnect() end
+        skinFrameConnection = SkinFrame:GetPropertyChangedSignal("Visible"):Connect(function()
+            if isSkinActivated and SkinFrame.Visible then task.defer(createSkinButtons) end
+        end)
+        local describeFrame = CharacterFrame:FindFirstChild("DescribeFrame")
+        if describeFrame then
+            if towerValueConnection then towerValueConnection:Disconnect() end
+            towerValueConnection = describeFrame:GetAttributeChangedSignal("TowerValue"):Connect(function()
+                if isSkinActivated and SkinFrame.Visible then task.defer(createSkinButtons) end
+            end)
+        end
+        if SkinFrame.Visible then createSkinButtons() end
+        Fluent:Notify({ Title = "Skin Visuals", Content = "Skin preview and equip enabled", Duration = 3 })
+    end
+
+    ClientSection:AddButton({ Title = "Activate Toon Visuals", Description = "Forces toon buttons visible on the client", Callback = activateToonUnlocker })
+    ClientSection:AddButton({ Title = "Activate Skin Visuals", Description = "Adds skin buttons with preview & equip", Callback = activateSkinPreviewer })
+end
+
+if IsGame then
+    Window:SelectTab(Tabs.ESP)
+    
+    local GeneratorSection = Tabs.ESP:AddSection("Generator ESP")
+    local MonsterSection = Tabs.ESP:AddSection("Monster ESP")
+    local ItemSection = Tabs.ESP:AddSection("Item ESP")
+    local PlayerSection = Tabs.Player:AddSection("Speed Modifier")
+    local NoclipSection = Tabs.Player:AddSection("Noclip")
+    local AutoSkillcheckSection = Tabs.Player:AddSection("Auto Skillcheck")
+
+    local GeneratorESPEnabled = false
+    local MonsterESPEnabled = false
+    local ItemESPEnabled = false
+    local MonsterNametagsEnabled = true
+    local ItemNametagsEnabled = true
+    local ESPTransparency = 0.5
+    
+    local GeneratorColor = Color3.fromRGB(0, 255, 255)
+    local MonsterColor = Color3.fromRGB(255, 50, 50)
+    local MonsterNametagColor = Color3.fromRGB(255, 100, 100)
+    local ItemColor = Color3.fromRGB(255, 255, 0)
+    local ItemNametagColor = Color3.fromRGB(255, 255, 100)
+    local ResearchColor = Color3.fromRGB(0, 255, 0)
+    local ResearchNametagColor = Color3.fromRGB(100, 255, 100)
+
+    local ActiveHighlights = {}
+    local ActiveBillboards = {}
+    local NoclipEnabled = false
+    local NoclipConnection = nil
+    local DisabledColliders = {}
+    local AutoSkillcheckEnabled = false
+    local AutoBarnabyEnabled = false
+
+    local AssetsFolder = workspace:FindFirstChild("GigiHubAssets")
+    if not AssetsFolder then
+        AssetsFolder = Instance.new("Folder")
+        AssetsFolder.Name = "GigiHubAssets"
+        AssetsFolder.Parent = workspace
+    end
+
+    local function getCleanMonsterName(model)
+        return string.gsub(model.Name, "Monster", "")
+    end
+
+    local function getHighestPoint(model)
+        local humanoid = model:FindFirstChildOfClass("Humanoid")
+        local humanoidRootPart = model:FindFirstChild("HumanoidRootPart")
+        
+        if humanoidRootPart then
+            local rootY = humanoidRootPart.Position.Y
+            local hipHeight = humanoid and humanoid.HipHeight or 3
+            return rootY + hipHeight + 1
+        end
+        
+        local highestY = -math.huge
+        for _, part in ipairs(model:GetDescendants()) do
+            if part:IsA("BasePart") and part.Transparency < 1 and part.Name ~= "HumanoidRootPart" then
+                local topCenter = (part.CFrame * CFrame.new(0, part.Size.Y/2, 0)).Position
+                if topCenter.Y > highestY then highestY = topCenter.Y end
+            end
+        end
+        
+        if highestY == -math.huge then
+            return model:GetPivot().Position.Y + 3
+        end
+        
+        return math.min(highestY, model:GetPivot().Position.Y + 10)
+    end
+
+    local function createNameTag(model, name, color)
+        local billboard = Instance.new("BillboardGui")
+        billboard.Name = "NameTag"
+        billboard.Adornee = model
+        billboard.Size = UDim2.new(6, 0, 1.5, 0)
+        billboard.AlwaysOnTop = true
+        billboard.MaxDistance = math.huge
+        
+        local textLabel = Instance.new("TextLabel")
+        textLabel.Size = UDim2.new(1, 0, 1, 0)
+        textLabel.BackgroundTransparency = 1
+        textLabel.Text = name
+        textLabel.TextColor3 = color or Color3.fromRGB(255, 255, 255)
+        textLabel.TextStrokeTransparency = 0
+        textLabel.TextStrokeColor3 = Color3.fromRGB(0, 0, 0)
+        textLabel.Font = Enum.Font.FredokaOne
+        textLabel.TextSize = 32
+        textLabel.Parent = billboard
+        billboard.Parent = AssetsFolder
+        
+        local highestPoint = getHighestPoint(model)
+        local modelPivot = model:GetPivot().Position
+        billboard.StudsOffset = Vector3.new(0, highestPoint - modelPivot.Y + 1, 0)
+        
+        return billboard
+    end
+
+    local function updateBillboardPositions()
+        for i = #ActiveBillboards, 1, -1 do
+            local billboard = ActiveBillboards[i]
+            if billboard and billboard.Parent and billboard.Adornee and billboard.Adornee.Parent then
+                local model = billboard.Adornee
+                local highestPoint = getHighestPoint(model)
+                local modelPivot = model:GetPivot().Position
+                billboard.StudsOffset = Vector3.new(0, highestPoint - modelPivot.Y + 1, 0)
+            else
+                if billboard and billboard.Parent then billboard:Destroy() end
+                table.remove(ActiveBillboards, i)
+            end
+        end
+    end
+
+    local function createHighlight(object, color)
+        local highlight = Instance.new("Highlight")
+        highlight.Name = "ESP_Highlight"
+        highlight.FillColor = color
+        highlight.FillTransparency = ESPTransparency
+        highlight.OutlineColor = Color3.fromRGB(255, 255, 255)
+        highlight.OutlineTransparency = 0
+        highlight.Adornee = object
+        highlight.Parent = AssetsFolder
+        return highlight
+    end
+
+    local function cleanupESP()
+        for _, highlight in ipairs(ActiveHighlights) do
+            if highlight and highlight.Parent then highlight:Destroy() end
+        end
+        table.clear(ActiveHighlights)
+        for _, billboard in ipairs(ActiveBillboards) do
+            if billboard and billboard.Parent then billboard:Destroy() end
+        end
+        table.clear(ActiveBillboards)
+    end
+
+    local function getItemName(model)
+        if model.Name == "ResearchCapsule" then
+            local prompt = model:FindFirstChild("Prompt")
+            if prompt then
+                local monsterValue = prompt:FindFirstChild("Monster")
+                if monsterValue and monsterValue:IsA("StringValue") then
+                    return "Research - " .. string.gsub(monsterValue.Value, "Monster", "")
+                end
+            end
+        end
+        return model.Name
+    end
+
+    local function processESP()
+        local currentRoom = workspace:FindFirstChild("CurrentRoom")
+        if not currentRoom then return end
+        for _, model in ipairs(currentRoom:GetChildren()) do
+            if model:IsA("Model") then
+                if GeneratorESPEnabled then
+                    local generators = model:FindFirstChild("Generators")
+                    if generators then
+                        for _, generator in ipairs(generators:GetChildren()) do
+                            if generator:IsA("Model") then
+                                local hasHighlight = false
+                                for _, hl in ipairs(ActiveHighlights) do
+                                    if hl and hl.Adornee == generator then hasHighlight = true break end
+                                end
+                                if not hasHighlight then
+                                    table.insert(ActiveHighlights, createHighlight(generator, GeneratorColor))
+                                end
+                            end
+                        end
+                    end
+                end
+                if MonsterESPEnabled then
+                    local monsters = model:FindFirstChild("Monsters")
+                    if monsters then
+                        for _, monster in ipairs(monsters:GetChildren()) do
+                            if monster:IsA("Model") then
+                                local hasHighlight = false
+                                for _, hl in ipairs(ActiveHighlights) do
+                                    if hl and hl.Adornee == monster then hasHighlight = true break end
+                                end
+                                if not hasHighlight then
+                                    table.insert(ActiveHighlights, createHighlight(monster, MonsterColor))
+                                    if MonsterNametagsEnabled then
+                                        table.insert(ActiveBillboards, createNameTag(monster, getCleanMonsterName(monster), MonsterNametagColor))
+                                    end
+                                end
+                            end
+                        end
+                    end
+                end
+                if ItemESPEnabled then
+                    local items = model:FindFirstChild("Items")
+                    if items then
+                        for _, item in ipairs(items:GetChildren()) do
+                            if item:IsA("Model") then
+                                local hasHighlight = false
+                                for _, hl in ipairs(ActiveHighlights) do
+                                    if hl and hl.Adornee == item then hasHighlight = true break end
+                                end
+                                if not hasHighlight then
+                                    local itemName = getItemName(item)
+                                    local highlightColor = ItemColor
+                                    local nameColor = ItemNametagColor
+                                    if item.Name == "ResearchCapsule" then
+                                        highlightColor = ResearchColor
+                                        nameColor = ResearchNametagColor
+                                    end
+                                    table.insert(ActiveHighlights, createHighlight(item, highlightColor))
+                                    if ItemNametagsEnabled then
+                                        table.insert(ActiveBillboards, createNameTag(item, itemName, nameColor))
+                                    end
+                                end
+                            end
+                        end
+                    end
+                end
+            end
+        end
+    end
+
+    local function fullRefresh()
+        cleanupESP()
+        processESP()
+    end
+
+    local function updateHighlightTransparency()
+        for _, highlight in ipairs(ActiveHighlights) do
+            if highlight and highlight.Parent then
+                highlight.FillTransparency = ESPTransparency
+            end
+        end
+    end
+
+    local function monitorFolder(folder)
+        if not folder then return end
+        folder.ChildAdded:Connect(function(item)
+            if item:IsA("Model") then task.wait(0.1) processESP() end
+        end)
+        folder.ChildRemoved:Connect(function(item)
+            if item:IsA("Model") then fullRefresh() end
+        end)
+    end
+
+    local function monitorModel(model)
+        if not model then return end
+        model.ChildAdded:Connect(function(folder)
+            if folder.Name == "Generators" or folder.Name == "Monsters" or folder.Name == "Items" then
+                task.wait(0.1) processESP() monitorFolder(folder)
+            end
+        end)
+        model.ChildRemoved:Connect(function(folder)
+            if folder.Name == "Generators" or folder.Name == "Monsters" or folder.Name == "Items" then fullRefresh() end
+        end)
+        for _, folderName in ipairs({"Generators", "Monsters", "Items"}) do
+            local folder = model:FindFirstChild(folderName)
+            if folder then monitorFolder(folder) end
+        end
+    end
+
+    local function monitorCurrentRoom(currentRoom)
+        if not currentRoom then return end
+        currentRoom.ChildAdded:Connect(function(model)
+            if model:IsA("Model") then task.wait(0.1) processESP() monitorModel(model) end
+        end)
+        currentRoom.ChildRemoved:Connect(function(model)
+            if model:IsA("Model") then fullRefresh() end
+        end)
+        for _, model in ipairs(currentRoom:GetChildren()) do
+            if model:IsA("Model") then monitorModel(model) end
+        end
+    end
+
+    local function shouldDisableCollider(object)
+        if object:IsA("BasePart") and (object.Name == "NoClip" or object.Name == "CylinderCollider" or object.Name == "NoClip_Collider") then
+            return true
+        end
+        if object:IsA("Model") and (object.Name == "Wall" or object.Name == "ShortWall" or object.Name == "WindowWall") then
+            return true
+        end
+        return false
+    end
+
+    local function disableCollidersInObject(object)
+        if shouldDisableCollider(object) then
+            if object:IsA("BasePart") and object.CanCollide then
+                object.CanCollide = false
+                table.insert(DisabledColliders, object)
+            elseif object:IsA("Model") then
+                for _, child in ipairs(object:GetDescendants()) do
+                    if child:IsA("BasePart") and child.CanCollide then
+                        child.CanCollide = false
+                        table.insert(DisabledColliders, child)
+                    end
+                end
+            end
+        end
+    end
+
+    local function findAndDisableColliders()
+        for _, descendant in ipairs(workspace:GetDescendants()) do
+            disableCollidersInObject(descendant)
+        end
+    end
+
+    local function enableNoclip()
+        if NoclipConnection then NoclipConnection:Disconnect() end
+        table.clear(DisabledColliders)
+        findAndDisableColliders()
+        NoclipConnection = RunService.Stepped:Connect(function()
+            if not NoclipEnabled then return end
+            findAndDisableColliders()
+        end)
+        workspace.DescendantAdded:Connect(function(descendant)
+            if NoclipEnabled then
+                task.wait(0.1)
+                disableCollidersInObject(descendant)
+            end
+        end)
+    end
+
+    local function disableNoclip()
+        if NoclipConnection then
+            NoclipConnection:Disconnect()
+            NoclipConnection = nil
+        end
+        for _, part in ipairs(DisabledColliders) do
+            if part and part.Parent then
+                part.CanCollide = true
+            end
+        end
+        table.clear(DisabledColliders)
+    end
+
+local function autoCompleteSkillcheck()
+    local mainGui = PlayerGui:FindFirstChild("MainGui")
+    if not mainGui then return end
+    local menu = mainGui:FindFirstChild("Menu")
+    if not menu then return end
+
+    local skillCheckFrame = menu:FindFirstChild("SkillCheckFrame")
+    if not skillCheckFrame or not skillCheckFrame.Visible then return end
+
+    local marker = skillCheckFrame:FindFirstChild("Marker")
+    local goldArea = skillCheckFrame:FindFirstChild("GoldArea")
+    local calibrate = menu:FindFirstChild("Calibrate")
+
+    if marker and goldArea and calibrate then
+        local goldCenter = goldArea.Position.X.Scale + (goldArea.Size.X.Scale / 2)
+        marker.Position = UDim2.new(goldCenter, 0, marker.Position.Y.Scale, 0)
+
+        if calibrate.Visible then
+            calibrate.Activated:Fire()
+        end
+    end
+end
+
+    local function autoPlayBarnaby()
+        local mainGui = PlayerGui:FindFirstChild("MainGui")
+        if not mainGui then return end
+        
+        for _, gui in ipairs(PlayerGui:GetChildren()) do
+            if gui:GetAttribute("BarnabyArcadeSession") then
+                local screenGui = gui
+                if screenGui:FindFirstChild("GameWindow") then
+                    local gameWindow = screenGui.GameWindow
+                    local viewportFrame = gameWindow:FindFirstChild("ViewportFrame")
+                    if viewportFrame and viewportFrame.CurrentCamera then
+                        local worldModel = viewportFrame:FindFirstChild("WorldModel")
+                        if worldModel then
+                            local fish = nil
+                            local obstacles = {}
+                            
+                            for _, child in ipairs(worldModel:GetChildren()) do
+                                if child:IsA("Model") then
+                                    if child:FindFirstChild("Barnaby") or child.Name:find("Fish") then
+                                        fish = child
+                                    elseif child.Name:find("Obstacle") or child.Name:find("Seaweed") then
+                                        table.insert(obstacles, child)
+                                    end
+                                end
+                            end
+                            
+                            if fish and fish.PrimaryPart then
+                                local fishY = fish.PrimaryPart.Position.Y
+                                
+                                for _, obstacle in ipairs(obstacles) do
+                                    if obstacle.PrimaryPart then
+                                        local obsX = obstacle.PrimaryPart.Position.X
+                                        if math.abs(obsX) < 10 then
+                                            local gapY = obstacle:GetAttribute("GapY")
+                                            if gapY then
+                                                if fishY < gapY - 3 then
+                                                    firesignal(gameWindow.Mobile.MouseButton1Down)
+                                                end
+                                            end
+                                        end
+                                    end
+                                end
+                            end
+                        end
+                    end
+                end
+            end
+        end
+    end
+
+    RunService.RenderStepped:Connect(function()
+        if AutoSkillcheckEnabled then
+            autoCompleteSkillcheck()
+        end
+        if AutoBarnabyEnabled then
+            autoPlayBarnaby()
+        end
+    end)
+
+    workspace.ChildAdded:Connect(function(child)
+        if child.Name == "CurrentRoom" then task.wait(0.1) processESP() monitorCurrentRoom(child) end
+    end)
+    workspace.ChildRemoved:Connect(function(child)
+        if child.Name == "CurrentRoom" then cleanupESP() end
+    end)
+
+    local existingRoom = workspace:FindFirstChild("CurrentRoom")
+    if existingRoom then monitorCurrentRoom(existingRoom) task.wait(0.1) processESP() end
+
+    RunService.Heartbeat:Connect(function()
+        if #ActiveBillboards > 0 then updateBillboardPositions() end
+    end)
+    RunService.RenderStepped:Connect(function()
+        if #ActiveBillboards > 0 then updateBillboardPositions() end
+    end)
+
+    GeneratorSection:AddToggle("GeneratorESP", { Title = "Enable Generator ESP", Description = "Highlights all generators", Default = false, Callback = function(value) GeneratorESPEnabled = value fullRefresh() end })
+    GeneratorSection:AddColorpicker("GeneratorColor", { Title = "Generator Color", Default = GeneratorColor, Callback = function(value) GeneratorColor = value fullRefresh() end })
+
+    MonsterSection:AddToggle("MonsterESP", { Title = "Enable Monster ESP", Description = "Highlights all monsters", Default = false, Callback = function(value) MonsterESPEnabled = value fullRefresh() end })
+    MonsterSection:AddToggle("MonsterNametags", { Title = "Show Nametags", Description = "Show nametags above monsters", Default = true, Callback = function(value) MonsterNametagsEnabled = value fullRefresh() end })
+    MonsterSection:AddColorpicker("MonsterColor", { Title = "Highlight Color", Default = MonsterColor, Callback = function(value) MonsterColor = value fullRefresh() end })
+    MonsterSection:AddColorpicker("MonsterNametagColor", { Title = "Nametag Color", Default = MonsterNametagColor, Callback = function(value) MonsterNametagColor = value fullRefresh() end })
+
+    ItemSection:AddToggle("ItemESP", { Title = "Enable Item ESP", Description = "Highlights all items", Default = false, Callback = function(value) ItemESPEnabled = value fullRefresh() end })
+    ItemSection:AddToggle("ItemNametags", { Title = "Show Nametags", Description = "Show nametags above items", Default = true, Callback = function(value) ItemNametagsEnabled = value fullRefresh() end })
+    ItemSection:AddColorpicker("ItemColor", { Title = "Highlight Color", Default = ItemColor, Callback = function(value) ItemColor = value fullRefresh() end })
+    ItemSection:AddColorpicker("ItemNametagColor", { Title = "Nametag Color", Default = ItemNametagColor, Callback = function(value) ItemNametagColor = value fullRefresh() end })
+    ItemSection:AddColorpicker("ResearchColor", { Title = "Research Capsule Color", Default = ResearchColor, Callback = function(value) ResearchColor = value fullRefresh() end })
+    ItemSection:AddColorpicker("ResearchNametagColor", { Title = "Research Nametag Color", Default = ResearchNametagColor, Callback = function(value) ResearchNametagColor = value fullRefresh() end })
+
+    local ESPSettingsSection = Tabs.ESP:AddSection("ESP Settings")
+    ESPSettingsSection:AddSlider("ESPTransparency", {
+        Title = "ESP Transparency",
+        Description = "Adjust highlight transparency",
+        Default = 0.5,
+        Min = 0,
+        Max = 1,
+        Rounding = 1,
+        Callback = function(value)
+            ESPTransparency = value
+            updateHighlightTransparency()
+        end
+    })
+
+    local WalkSpeedMultiplier = 0
+    local RunSpeedMultiplier = 0
+    local SpeedEnabled = false
+    local SpeedConnection = nil
+    local isSprinting = false
+
+    local function getCharacter()
+        return LocalPlayer.Character
+    end
+
+    local function getHumanoid()
+        local char = getCharacter()
+        if char then return char:FindFirstChildOfClass("Humanoid") end
+        return nil
+    end
+
+    local function getStats()
+        local char = getCharacter()
+        if not char then return nil end
+        local inGamePlayers = workspace:FindFirstChild("InGamePlayers")
+        if not inGamePlayers then return nil end
+        local playerModel = inGamePlayers:FindFirstChild(char.Name)
+        if not playerModel then return nil end
+        return playerModel:FindFirstChild("Stats")
+    end
+
+    local function getBaseSpeeds()
+        local baseWalk = 16
+        local baseRun = 20
+        local stats = getStats()
+        if stats then
+            local walkSpeedValue = stats:FindFirstChild("WalkSpeed")
+            local runSpeedValue = stats:FindFirstChild("RunSpeed")
+            if walkSpeedValue and walkSpeedValue:IsA("NumberValue") then baseWalk = walkSpeedValue.Value end
+            if runSpeedValue and runSpeedValue:IsA("NumberValue") then baseRun = runSpeedValue.Value end
+        end
+        return baseWalk, baseRun
+    end
+
+    local function applySpeed()
+        local humanoid = getHumanoid()
+        if not humanoid then return end
+        if not SpeedEnabled then return end
+        local stats = getStats()
+        if not stats then return end
+        local baseWalk, baseRun = getBaseSpeeds()
+        local sprintingValue = stats:FindFirstChild("Sprinting")
+        if sprintingValue and sprintingValue:IsA("BoolValue") then isSprinting = sprintingValue.Value end
+        if isSprinting then
+            humanoid.WalkSpeed = baseRun * (1 + RunSpeedMultiplier)
+        else
+            humanoid.WalkSpeed = baseWalk * (1 + WalkSpeedMultiplier)
+        end
+    end
+
+    local function resetSpeed()
+        local humanoid = getHumanoid()
+        if not humanoid then return end
+        local stats = getStats()
+        if not stats then return end
+        local walkSpeedValue = stats:FindFirstChild("WalkSpeed")
+        local runSpeedValue = stats:FindFirstChild("RunSpeed")
+        local sprintingValue = stats:FindFirstChild("Sprinting")
+        local sprinting = false
+        if sprintingValue and sprintingValue:IsA("BoolValue") then sprinting = sprintingValue.Value end
+        if sprinting and runSpeedValue and runSpeedValue:IsA("NumberValue") then
+            humanoid.WalkSpeed = runSpeedValue.Value
+        elseif walkSpeedValue and walkSpeedValue:IsA("NumberValue") then
+            humanoid.WalkSpeed = walkSpeedValue.Value
+        end
+    end
+
+    local function startSpeedLoop()
+        if SpeedConnection then SpeedConnection:Disconnect() end
+        SpeedConnection = RunService.Heartbeat:Connect(function()
+            if SpeedEnabled then applySpeed() end
+        end)
+    end
+
+    local function stopSpeedLoop()
+        if SpeedConnection then SpeedConnection:Disconnect() SpeedConnection = nil end
+    end
+
+    LocalPlayer.CharacterAdded:Connect(function(char)
+        isSprinting = false
+        if SpeedEnabled then task.wait(0.5) startSpeedLoop() end
+    end)
+
+    PlayerSection:AddToggle("SpeedToggle", { Title = "Enable Speed Modifier", Description = "Toggle speed modification on/off", Default = false, Callback = function(value)
+        SpeedEnabled = value
+        if value then startSpeedLoop() else stopSpeedLoop() resetSpeed() end
+    end })
+
+    local baseWalk, baseRun = getBaseSpeeds()
+
+    PlayerSection:AddSlider("WalkSpeed", {
+        Title = "Walk Speed",
+        Description = "Base: " .. string.format("%.1f", baseWalk),
+        Default = baseWalk,
+        Min = 0,
+        Max = baseWalk * 10,
+        Rounding = 0,
+        Callback = function(value)
+            WalkSpeedMultiplier = (value - baseWalk) / baseWalk
+        end
+    })
+
+    PlayerSection:AddSlider("RunSpeed", {
+        Title = "Run Speed",
+        Description = "Base: " .. string.format("%.1f", baseRun),
+        Default = baseRun,
+        Min = 0,
+        Max = baseRun * 10,
+        Rounding = 0,
+        Callback = function(value)
+            RunSpeedMultiplier = (value - baseRun) / baseRun
+        end
+    })
+
+    NoclipSection:AddToggle("NoclipToggle", { Title = "Enable Noclip", Description = "Walk through specific walls and colliders", Default = false, Callback = function(value)
+        NoclipEnabled = value
+        if value then
+            enableNoclip()
+        else
+            disableNoclip()
+        end
+    end })
+
+    AutoSkillcheckSection:AddToggle("AutoSkillcheckToggle", { 
+        Title = "Auto Complete Skillchecks", 
+        Description = "Automatically completes all skillcheck types instantly", 
+        Default = false, 
+        Callback = function(value)
+            AutoSkillcheckEnabled = value
+        end 
+    })
+
+    AutoSkillcheckSection:AddToggle("AutoBarnabyToggle", { 
+        Title = "Auto Play Barnaby", 
+        Description = "Automatically plays Barnaby minigame (auto jump, collect coins, never die)", 
+        Default = false, 
+        Callback = function(value)
+            AutoBarnabyEnabled = value
+        end 
+    })
+end
+
+if not IsLobby and not IsGame then
+    if Tabs.Client then Window:SelectTab(Tabs.Client) end
+    local UnknownSection = Tabs.Client:AddSection("Unknown Place")
+    UnknownSection:AddParagraph({ Title = "Unknown Place", Content = "This script is designed for specific places. Place ID: " .. tostring(CurrentPlaceId) })
+end
+
+Fluent:Notify({ Title = "Loaded", Content = "Gigi's World HUB loaded for " .. placeSuffix, Duration = 3 })
