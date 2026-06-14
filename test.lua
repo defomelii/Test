@@ -227,8 +227,6 @@ if IsGame then
     local NoclipEnabled, NoclipConnection = false, nil
     local DisabledColliders = {}
     local AutoSkillcheckEnabled, AutoBarnabyEnabled = false, false
-    local SkillCheckHooked = false
-    local lastJumpTime = 0
 
     local AssetsFolder = workspace:FindFirstChild("GigiHubAssets") or Instance.new("Folder", workspace)
     AssetsFolder.Name = "GigiHubAssets"
@@ -359,7 +357,7 @@ if IsGame then
         for _, m in ipairs(cr:GetChildren()) do if m:IsA("Model") then monitorModel(m) end end
     end
 
-    -- Noclip (fixed to include all relevant objects)
+    -- Noclip
     local function shouldDisableCollider(obj)
         if obj:IsA("BasePart") then
             if obj.Name == "NoClip" or obj.Name == "CylinderCollider" or obj.Name == "NoClip_Collider" then return true end
@@ -396,7 +394,7 @@ if IsGame then
         table.clear(DisabledColliders)
     end
 
-    -- AUTO SKILLCHECK (UI detection fixed: search ALL PlayerGui descendants)
+    -- Auto Skillcheck
     local function findInPlayerGui(name)
         for _, d in ipairs(PlayerGui:GetDescendants()) do if d.Name == name then return d end end
         return nil
@@ -404,21 +402,16 @@ if IsGame then
     local function autoCompleteHorizontal()
         local skillCheckFrame = findInPlayerGui("SkillCheckFrame")
         if not skillCheckFrame or not skillCheckFrame.Visible then return end
-        local marker = skillCheckFrame:FindFirstChild("Marker")
-        local goldArea = skillCheckFrame:FindFirstChild("GoldArea")
-        local requiredArea = skillCheckFrame:FindFirstChild("RequiredArea")
+        local marker = findInPlayerGui("Marker") or skillCheckFrame:FindFirstChild("Marker")
+        local goldArea = findInPlayerGui("GoldArea") or skillCheckFrame:FindFirstChild("GoldArea")
+        local requiredArea = findInPlayerGui("RequiredArea") or skillCheckFrame:FindFirstChild("RequiredArea")
         local calibrate = findInPlayerGui("Calibrate")
         if not (marker and goldArea and calibrate) then return end
-        -- Destroy marker tween
         for _, tw in ipairs(TweenService:GetTweensOn(marker)) do tw:Destroy() end
         if requiredArea then goldArea.Size = UDim2.new(1,0,1,0); goldArea.Position = UDim2.new(0,0,0,0) end
         marker.Position = UDim2.new(0.5, 0, marker.Position.Y.Scale, 0)
         if calibrate.Visible then calibrate.Activated:Fire() end
-        -- Simulate Space
         UserInputService.InputBegan:Fire({KeyCode = Enum.KeyCode.Space, UserInputType = Enum.UserInputType.Keyboard, UserInputState = Enum.UserInputState.Begin}, false)
-        -- Fake feedback
-        local correctSound = PlayerGui:FindFirstChild("ScreenGui") and PlayerGui.ScreenGui:FindFirstChild("Correct")
-        if correctSound then correctSound:Stop(); correctSound:Play() end
         Fluent:Notify({ Title = "Skillcheck", Content = "Great Job! (auto)", Duration = 1 })
     end
     local function autoCompleteCircle()
@@ -457,11 +450,12 @@ if IsGame then
         end
     end
 
-    -- AUTO BARNABY (smarter jump logic)
+    -- Auto Barnaby (smart gap dodging)
+    local lastJumpTime = 0
     local prevFishY = nil
     local function autoPlayBarnaby()
         local now = tick()
-        if now - lastJumpTime < 0.06 then return end
+        if now - lastJumpTime < 0.05 then return end
         for _, gui in ipairs(PlayerGui:GetChildren()) do
             if gui:GetAttribute("BarnabyArcadeSession") then
                 local gw = gui:FindFirstChild("GameWindow")
@@ -470,38 +464,51 @@ if IsGame then
                 if not vp then continue end
                 local wm = vp:FindFirstChild("WorldModel")
                 if not wm then continue end
-                local fish = nil; local obstacles = {}
+                local fish = nil
+                local obstacles = {}
                 for _, child in ipairs(wm:GetChildren()) do
                     if child:IsA("Model") then
-                        if child:FindFirstChild("Barnaby") or child.Name:lower():find("fish") then fish = child
-                        elseif child.Name:lower():find("obstacle") or child.Name:lower():find("seaweed") then table.insert(obstacles, child) end
+                        if child:FindFirstChild("Barnaby") or child.Name:lower():find("fish") then
+                            fish = child
+                        elseif child.Name:lower():find("obstacle") or child.Name:lower():find("seaweed") then
+                            table.insert(obstacles, child)
+                        end
                     end
                 end
                 if not fish or not fish.PrimaryPart then return end
                 local fishY = fish.PrimaryPart.Position.Y
                 local fishX = fish.PrimaryPart.Position.X
-                local targetGapY = nil; local minDist = math.huge
+                local targetGapY = nil
+                local minDist = math.huge
                 for _, obs in ipairs(obstacles) do
                     if obs.PrimaryPart then
                         local dist = obs.PrimaryPart.Position.X - fishX
-                        if dist > 0 and dist < minDist then minDist = dist; targetGapY = obs:GetAttribute("GapY") end
+                        if dist > 0 and dist < minDist then
+                            minDist = dist
+                            targetGapY = obs:GetAttribute("GapY")
+                        end
                     end
                 end
                 local shouldJump = false
                 if targetGapY then
-                    -- jump if below the gap center by more than 4 studs
-                    if fishY < targetGapY - 4 then shouldJump = true
-                    elseif prevFishY and fishY < prevFishY and fishY < targetGapY then shouldJump = true end -- falling and below gap
+                    if fishY < targetGapY - 3 then
+                        shouldJump = true
+                    elseif prevFishY and fishY < prevFishY and fishY < targetGapY then
+                        shouldJump = true
+                    end
                 else
-                    -- no gap ahead, just keep fish from hitting bottom
-                    if fishY < -10 then shouldJump = true end
+                    if fishY < -8 then shouldJump = true end
                 end
                 prevFishY = fishY
                 if shouldJump then
                     lastJumpTime = now
                     local mobile = gw:FindFirstChild("Mobile")
                     if mobile then mobile.MouseButton1Down:Fire() end
-                    UserInputService.InputBegan:Fire({KeyCode = Enum.KeyCode.Space, UserInputType = Enum.UserInputType.Keyboard, UserInputState = Enum.UserInputState.Begin}, false)
+                    UserInputService.InputBegan:Fire({
+                        KeyCode = Enum.KeyCode.Space,
+                        UserInputType = Enum.UserInputType.Keyboard,
+                        UserInputState = Enum.UserInputState.Begin
+                    }, false)
                 end
             end
         end
@@ -582,8 +589,26 @@ if IsGame then
 
     NoclipSection:AddToggle("NoclipToggle", { Title = "Enable Noclip", Description = "Walk through walls & colliders", Default = false, Callback = function(v) NoclipEnabled = v; if v then enableNoclip() else disableNoclip() end end })
 
-    AutoSkillcheckSection:AddToggle("AutoSkillcheckToggle", { Title = "Auto Complete Skillchecks", Description = "Instantly passes all minigames", Default = false, Callback = function(v) AutoSkillcheckEnabled = v end })
-    AutoSkillcheckSection:AddToggle("AutoBarnabyToggle", { Title = "Auto Play Barnaby", Description = "Smartly dodges and collects coin DEBUGGGGGGs", Default = false, Callback = function(v) AutoBarnabyEnabled = v end })
+    -- Auto Skillcheck Button (permanent)
+    AutoSkillcheckSection:AddButton({ 
+        Title = "Enable Auto Skillchecks", 
+        Description = "Instantly passes all minigames (cannot be undone)", 
+        Callback = function()
+            if AutoSkillcheckEnabled then
+                Fluent:Notify({ Title = "Already Enabled", Content = "Skillchecks are already auto.", Duration = 2 })
+                return
+            end
+            AutoSkillcheckEnabled = true
+            Fluent:Notify({ Title = "Success", Content = "Auto skillchecks activated!", Duration = 3 })
+        end
+    })
+
+    AutoSkillcheckSection:AddToggle("AutoBarnabyToggle", { 
+        Title = "Auto Play Barnaby", 
+        Description = "Smartly dodges seaweed and collects coins", 
+        Default = false, 
+        Callback = function(v) AutoBarnabyEnabled = v end 
+    })
 end
 
 if not IsLobby and not IsGame then
