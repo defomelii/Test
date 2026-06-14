@@ -323,7 +323,7 @@ if IsGame then
     local NoclipSection = Tabs.Player:AddSection("Noclip")
     local AutoSkillcheckSection = Tabs.Player:AddSection("Auto Skillcheck")
 
-    -- ESP variables (unchanged)
+    -- ESP variables
     local GeneratorESPEnabled = false
     local MonsterESPEnabled = false
     local ItemESPEnabled = false
@@ -354,7 +354,7 @@ if IsGame then
         AssetsFolder.Parent = workspace
     end
 
-    -- ESP helper functions (unchanged)
+    -- ESP helper functions
     local function getCleanMonsterName(model)
         return string.gsub(model.Name, "Monster", "")
     end
@@ -584,7 +584,6 @@ if IsGame then
         end
     end
 
-    -- Noclip functions (unchanged)
     local function shouldDisableCollider(object)
         if object:IsA("BasePart") and (object.Name == "NoClip" or object.Name == "CylinderCollider" or object.Name == "NoClip_Collider") then
             return true
@@ -646,7 +645,17 @@ if IsGame then
         table.clear(DisabledColliders)
     end
 
-    -- ================== AUTO SKILLCHECK SYSTEM ==================
+    -- ================== AUTO SKILLCHECK SYSTEM (WITH DEBUG) ==================
+    local function debugPrint(msg)
+        -- Use a GUI notification that's visible on screen
+        local success, err = pcall(function()
+            Fluent:Notify({ Title = "Debug", Content = msg, Duration = 2 })
+        end)
+        if not success then
+            print("[GigiHub Debug] " .. msg)
+        end
+    end
+
     local function autoCompleteHorizontal()
         local mainGui = PlayerGui:FindFirstChild("MainGui")
         if not mainGui then return end
@@ -654,32 +663,47 @@ if IsGame then
         if not menu then return end
 
         local skillCheckFrame = menu:FindFirstChild("SkillCheckFrame")
-        if not skillCheckFrame or not skillCheckFrame.Visible then return end
+        if not skillCheckFrame then return end
+        if not skillCheckFrame.Visible then return end
+
+        debugPrint("Horizontal skillcheck detected!")
 
         local marker = skillCheckFrame:FindFirstChild("Marker")
         local goldArea = skillCheckFrame:FindFirstChild("GoldArea")
         local requiredArea = skillCheckFrame:FindFirstChild("RequiredArea")
         local calibrate = menu:FindFirstChild("Calibrate")
 
-        if not (marker and goldArea and calibrate) then return end
+        if not marker then debugPrint("Marker missing") return end
+        if not goldArea then debugPrint("GoldArea missing") return end
+        if not calibrate then debugPrint("Calibrate missing") return end
 
-        -- Destroy the tween that moves the marker
-        for _, tween in ipairs(TweenService:GetTweensOn(marker)) do
+        local tweens = TweenService:GetTweensOn(marker)
+        for _, tween in ipairs(tweens) do
             tween:Destroy()
         end
+        debugPrint("Destroyed " .. #tweens .. " tweens on marker")
 
-        -- Expand gold area to fill the whole required area
         if requiredArea then
             goldArea.Size = UDim2.new(1, 0, 1, 0)
             goldArea.Position = UDim2.new(0, 0, 0, 0)
         end
 
-        -- Place marker in the middle
         marker.Position = UDim2.new(0.5, 0, marker.Position.Y.Scale, 0)
 
-        -- Fire calibrate to complete
         if calibrate.Visible then
+            debugPrint("Firing Calibrate button")
             calibrate.Activated:Fire()
+            task.spawn(function()
+                local fakeInput = {
+                    KeyCode = Enum.KeyCode.Space,
+                    UserInputType = Enum.UserInputType.Keyboard,
+                    UserInputState = Enum.UserInputState.Begin
+                }
+                UserInputService.InputBegan:Fire(fakeInput, false)
+            end)
+            debugPrint("Skillcheck auto-completed!")
+        else
+            debugPrint("Calibrate not visible")
         end
     end
 
@@ -688,26 +712,28 @@ if IsGame then
             if gui.Name == "CircleSkillCheckGui" then
                 local frame = gui:FindFirstChild("SkillCheckFrame")
                 if frame and frame.Visible then
+                    debugPrint("Circle skillcheck detected!")
                     local container = frame:FindFirstChild("Container")
                     if container then
                         local tapButton = container:FindFirstChild("CircleClickHandler")
                         if tapButton and tapButton.Visible then
-                            -- Stop the shrinking tween
                             local shrinkingCircle = container:FindFirstChild("ShrinkingCircle")
                             if shrinkingCircle then
-                                for _, tween in ipairs(TweenService:GetTweensOn(shrinkingCircle)) do
+                                local tweens = TweenService:GetTweensOn(shrinkingCircle)
+                                for _, tween in ipairs(tweens) do
                                     tween:Destroy()
                                 end
-                                -- Set size to match yellow zone (perfect hit)
                                 local yellowCircle = container:FindFirstChild("YellowCircle")
                                 if yellowCircle then
                                     shrinkingCircle.Size = yellowCircle.Size
                                 else
-                                    shrinkingCircle.Size = UDim2.new(0, 0, 0, 0) -- smallest
+                                    shrinkingCircle.Size = UDim2.new(0, 0, 0, 0)
                                 end
                             end
-                            -- Fire tap button
                             tapButton.Activated:Fire()
+                            task.wait(0.02)
+                            UserInputService.InputBegan:Fire({KeyCode = Enum.KeyCode.Space, UserInputType = Enum.UserInputType.Keyboard, UserInputState = Enum.UserInputState.Begin}, false)
+                            debugPrint("Circle skillcheck auto-completed!")
                             return
                         end
                     end
@@ -721,15 +747,22 @@ if IsGame then
             if gui.Name == "TreadmillTapSkillCheckGui" then
                 local frame = gui:FindFirstChild("TapSkillCheckFrame")
                 if frame and frame.Visible then
+                    debugPrint("Treadmill skillcheck detected!")
                     local container = frame:FindFirstChild("Container")
                     if container then
                         local tapButton = container:FindFirstChild("TapButton")
                         if tapButton and tapButton.Visible then
-                            -- Rapidly tap to fill the meter instantly
-                            for _ = 1, 12 do  -- 12 taps ensure full even for toughest requirement
+                            for i = 1, 12 do
                                 tapButton.Activated:Fire()
                                 task.wait(0.01)
                             end
+                            for i = 1, 12 do
+                                UserInputService.InputBegan:Fire({KeyCode = Enum.KeyCode.Space, UserInputType = Enum.UserInputType.Keyboard, UserInputState = Enum.UserInputState.Begin}, false)
+                                task.wait(0.01)
+                                UserInputService.InputEnded:Fire({KeyCode = Enum.KeyCode.Space, UserInputType = Enum.UserInputType.Keyboard, UserInputState = Enum.UserInputState.End}, false)
+                                task.wait(0.01)
+                            end
+                            debugPrint("Treadmill skillcheck auto-completed!")
                             return
                         end
                     end
@@ -738,7 +771,6 @@ if IsGame then
         end
     end
 
-    -- Auto Barnaby: spam jump
     local function autoPlayBarnaby()
         for _, gui in ipairs(PlayerGui:GetChildren()) do
             if gui:GetAttribute("BarnabyArcadeSession") then
@@ -750,7 +782,6 @@ if IsGame then
         end
     end
 
-    -- Main loop that runs when any auto feature is enabled
     RunService.RenderStepped:Connect(function()
         if AutoSkillcheckEnabled then
             autoCompleteHorizontal()
@@ -762,7 +793,6 @@ if IsGame then
         end
     end)
 
-    -- Room and ESP monitoring (unchanged)
     workspace.ChildAdded:Connect(function(child)
         if child.Name == "CurrentRoom" then task.wait(0.1) processESP() monitorCurrentRoom(child) end
     end)
@@ -780,7 +810,6 @@ if IsGame then
         if #ActiveBillboards > 0 then updateBillboardPositions() end
     end)
 
-    -- UI Sections (unchanged)
     GeneratorSection:AddToggle("GeneratorESP", { Title = "Enable Generator ESP", Description = "Highlights all generators", Default = false, Callback = function(value) GeneratorESPEnabled = value fullRefresh() end })
     GeneratorSection:AddColorpicker("GeneratorColor", { Title = "Generator Color", Default = GeneratorColor, Callback = function(value) GeneratorColor = value fullRefresh() end })
 
@@ -810,7 +839,7 @@ if IsGame then
         end
     })
 
-    -- Speed modifier (unchanged)
+    -- Speed modifier
     local WalkSpeedMultiplier = 0
     local RunSpeedMultiplier = 0
     local SpeedEnabled = false
@@ -939,7 +968,6 @@ if IsGame then
         end
     end })
 
-    -- Auto Skillcheck toggles (new)
     AutoSkillcheckSection:AddToggle("AutoSkillcheckToggle", { 
         Title = "Auto Complete Skillchecks", 
         Description = "Instantly passes all minigames (horizontal, circle, treadmill)", 
