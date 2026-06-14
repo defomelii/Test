@@ -1,6 +1,7 @@
 local Players = game:GetService("Players")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local RunService = game:GetService("RunService")
+local TweenService = game:GetService("TweenService")
 local UserInputService = game:GetService("UserInputService")
 
 local LocalPlayer = Players.LocalPlayer
@@ -322,6 +323,7 @@ if IsGame then
     local NoclipSection = Tabs.Player:AddSection("Noclip")
     local AutoSkillcheckSection = Tabs.Player:AddSection("Auto Skillcheck")
 
+    -- ESP variables (unchanged)
     local GeneratorESPEnabled = false
     local MonsterESPEnabled = false
     local ItemESPEnabled = false
@@ -352,6 +354,7 @@ if IsGame then
         AssetsFolder.Parent = workspace
     end
 
+    -- ESP helper functions (unchanged)
     local function getCleanMonsterName(model)
         return string.gsub(model.Name, "Monster", "")
     end
@@ -581,6 +584,7 @@ if IsGame then
         end
     end
 
+    -- Noclip functions (unchanged)
     local function shouldDisableCollider(object)
         if object:IsA("BasePart") and (object.Name == "NoClip" or object.Name == "CylinderCollider" or object.Name == "NoClip_Collider") then
             return true
@@ -642,76 +646,69 @@ if IsGame then
         table.clear(DisabledColliders)
     end
 
-local function autoCompleteSkillcheck()
-    local mainGui = PlayerGui:FindFirstChild("MainGui")
-    if not mainGui then return end
-    local menu = mainGui:FindFirstChild("Menu")
-    if not menu then return end
-
-    local skillCheckFrame = menu:FindFirstChild("SkillCheckFrame")
-    if not skillCheckFrame or not skillCheckFrame.Visible then return end
-
-    local requiredArea = skillCheckFrame:FindFirstChild("RequiredArea")
-    local goldArea = skillCheckFrame:FindFirstChild("GoldArea")
-    if requiredArea and goldArea then
-        goldArea.Size = UDim2.new(1, 0, 1, 0) 
-        goldArea.Position = UDim2.new(0, 0, 0, 0) 
-    end
-
-    local marker = skillCheckFrame:FindFirstChild("Marker")
-    if marker then
-        marker.Position = UDim2.new(0.5, 0, marker.Position.Y.Scale, 0)
-    end
-
-    local calibrate = menu:FindFirstChild("Calibrate")
-    if calibrate and calibrate.Visible then
-        calibrate.Activated:Fire()
-    end
-end
-
-    local function autoPlayBarnaby()
+    -- ================== AUTO SKILLCHECK SYSTEM ==================
+    local function autoCompleteHorizontal()
         local mainGui = PlayerGui:FindFirstChild("MainGui")
         if not mainGui then return end
-        
+        local menu = mainGui:FindFirstChild("Menu")
+        if not menu then return end
+
+        local skillCheckFrame = menu:FindFirstChild("SkillCheckFrame")
+        if not skillCheckFrame or not skillCheckFrame.Visible then return end
+
+        local marker = skillCheckFrame:FindFirstChild("Marker")
+        local goldArea = skillCheckFrame:FindFirstChild("GoldArea")
+        local requiredArea = skillCheckFrame:FindFirstChild("RequiredArea")
+        local calibrate = menu:FindFirstChild("Calibrate")
+
+        if not (marker and goldArea and calibrate) then return end
+
+        -- Destroy the tween that moves the marker
+        for _, tween in ipairs(TweenService:GetTweensOn(marker)) do
+            tween:Destroy()
+        end
+
+        -- Expand gold area to fill the whole required area
+        if requiredArea then
+            goldArea.Size = UDim2.new(1, 0, 1, 0)
+            goldArea.Position = UDim2.new(0, 0, 0, 0)
+        end
+
+        -- Place marker in the middle
+        marker.Position = UDim2.new(0.5, 0, marker.Position.Y.Scale, 0)
+
+        -- Fire calibrate to complete
+        if calibrate.Visible then
+            calibrate.Activated:Fire()
+        end
+    end
+
+    local function autoCompleteCircle()
         for _, gui in ipairs(PlayerGui:GetChildren()) do
-            if gui:GetAttribute("BarnabyArcadeSession") then
-                local screenGui = gui
-                if screenGui:FindFirstChild("GameWindow") then
-                    local gameWindow = screenGui.GameWindow
-                    local viewportFrame = gameWindow:FindFirstChild("ViewportFrame")
-                    if viewportFrame and viewportFrame.CurrentCamera then
-                        local worldModel = viewportFrame:FindFirstChild("WorldModel")
-                        if worldModel then
-                            local fish = nil
-                            local obstacles = {}
-                            
-                            for _, child in ipairs(worldModel:GetChildren()) do
-                                if child:IsA("Model") then
-                                    if child:FindFirstChild("Barnaby") or child.Name:find("Fish") then
-                                        fish = child
-                                    elseif child.Name:find("Obstacle") or child.Name:find("Seaweed") then
-                                        table.insert(obstacles, child)
-                                    end
+            if gui.Name == "CircleSkillCheckGui" then
+                local frame = gui:FindFirstChild("SkillCheckFrame")
+                if frame and frame.Visible then
+                    local container = frame:FindFirstChild("Container")
+                    if container then
+                        local tapButton = container:FindFirstChild("CircleClickHandler")
+                        if tapButton and tapButton.Visible then
+                            -- Stop the shrinking tween
+                            local shrinkingCircle = container:FindFirstChild("ShrinkingCircle")
+                            if shrinkingCircle then
+                                for _, tween in ipairs(TweenService:GetTweensOn(shrinkingCircle)) do
+                                    tween:Destroy()
+                                end
+                                -- Set size to match yellow zone (perfect hit)
+                                local yellowCircle = container:FindFirstChild("YellowCircle")
+                                if yellowCircle then
+                                    shrinkingCircle.Size = yellowCircle.Size
+                                else
+                                    shrinkingCircle.Size = UDim2.new(0, 0, 0, 0) -- smallest
                                 end
                             end
-                            
-                            if fish and fish.PrimaryPart then
-                                local fishY = fish.PrimaryPart.Position.Y
-                                
-                                for _, obstacle in ipairs(obstacles) do
-                                    if obstacle.PrimaryPart then
-                                        local obsX = obstacle.PrimaryPart.Position.X
-                                        if math.abs(obsX) < 10 then
-                                            local gapY = obstacle:GetAttribute("GapY")
-                                            if gapY then
-                                                if fishY < gapY - 3 then
-                                                    firesignal(gameWindow.Mobile.MouseButton1Down)
-                                                end
-                                            end
-                                        end
-                                    end
-                                end
-                            end
+                            -- Fire tap button
+                            tapButton.Activated:Fire()
+                            return
                         end
                     end
                 end
@@ -719,15 +716,53 @@ end
         end
     end
 
+    local function autoCompleteTreadmill()
+        for _, gui in ipairs(PlayerGui:GetChildren()) do
+            if gui.Name == "TreadmillTapSkillCheckGui" then
+                local frame = gui:FindFirstChild("TapSkillCheckFrame")
+                if frame and frame.Visible then
+                    local container = frame:FindFirstChild("Container")
+                    if container then
+                        local tapButton = container:FindFirstChild("TapButton")
+                        if tapButton and tapButton.Visible then
+                            -- Rapidly tap to fill the meter instantly
+                            for _ = 1, 12 do  -- 12 taps ensure full even for toughest requirement
+                                tapButton.Activated:Fire()
+                                task.wait(0.01)
+                            end
+                            return
+                        end
+                    end
+                end
+            end
+        end
+    end
+
+    -- Auto Barnaby: spam jump
+    local function autoPlayBarnaby()
+        for _, gui in ipairs(PlayerGui:GetChildren()) do
+            if gui:GetAttribute("BarnabyArcadeSession") then
+                local gameWindow = gui:FindFirstChild("GameWindow")
+                if gameWindow and gameWindow:FindFirstChild("Mobile") then
+                    gameWindow.Mobile.MouseButton1Down:Fire()
+                end
+            end
+        end
+    end
+
+    -- Main loop that runs when any auto feature is enabled
     RunService.RenderStepped:Connect(function()
         if AutoSkillcheckEnabled then
-            autoCompleteSkillcheck()
+            autoCompleteHorizontal()
+            autoCompleteCircle()
+            autoCompleteTreadmill()
         end
         if AutoBarnabyEnabled then
             autoPlayBarnaby()
         end
     end)
 
+    -- Room and ESP monitoring (unchanged)
     workspace.ChildAdded:Connect(function(child)
         if child.Name == "CurrentRoom" then task.wait(0.1) processESP() monitorCurrentRoom(child) end
     end)
@@ -745,6 +780,7 @@ end
         if #ActiveBillboards > 0 then updateBillboardPositions() end
     end)
 
+    -- UI Sections (unchanged)
     GeneratorSection:AddToggle("GeneratorESP", { Title = "Enable Generator ESP", Description = "Highlights all generators", Default = false, Callback = function(value) GeneratorESPEnabled = value fullRefresh() end })
     GeneratorSection:AddColorpicker("GeneratorColor", { Title = "Generator Color", Default = GeneratorColor, Callback = function(value) GeneratorColor = value fullRefresh() end })
 
@@ -774,6 +810,7 @@ end
         end
     })
 
+    -- Speed modifier (unchanged)
     local WalkSpeedMultiplier = 0
     local RunSpeedMultiplier = 0
     local SpeedEnabled = false
@@ -902,9 +939,10 @@ end
         end
     end })
 
+    -- Auto Skillcheck toggles (new)
     AutoSkillcheckSection:AddToggle("AutoSkillcheckToggle", { 
         Title = "Auto Complete Skillchecks", 
-        Description = "Automatically completes all skillcheck types instantly", 
+        Description = "Instantly passes all minigames (horizontal, circle, treadmill)", 
         Default = false, 
         Callback = function(value)
             AutoSkillcheckEnabled = value
@@ -913,7 +951,7 @@ end
 
     AutoSkillcheckSection:AddToggle("AutoBarnabyToggle", { 
         Title = "Auto Play Barnaby", 
-        Description = "Automatically plays Barnaby minigame (auto jump, collect coins, never die)", 
+        Description = "Spams jump to survive and collect coins in Barnaby", 
         Default = false, 
         Callback = function(value)
             AutoBarnabyEnabled = value
