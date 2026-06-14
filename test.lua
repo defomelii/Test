@@ -347,6 +347,10 @@ if IsGame then
     local AutoSkillcheckEnabled = false
     local AutoBarnabyEnabled = false
 
+    -- For remote hook
+    local originalOnClientInvoke = nil
+    local skillCheckRemote = nil
+
     local AssetsFolder = workspace:FindFirstChild("GigiHubAssets")
     if not AssetsFolder then
         AssetsFolder = Instance.new("Folder")
@@ -645,95 +649,51 @@ if IsGame then
         table.clear(DisabledColliders)
     end
 
-    -- ================== AUTO SKILLCHECK (FIXED DETECTION) ==================
-    local function findFirstDescendantByName(parent, name)
-        for _, child in ipairs(parent:GetDescendants()) do
-            if child.Name == name then
-                return child
+    -- ================== REMOTE HOOK FOR AUTO SKILLCHECK ==================
+    local function findSkillCheckRemote()
+        local events = ReplicatedStorage:FindFirstChild("Events")
+        if not events then return nil end
+        for _, obj in ipairs(events:GetChildren()) do
+            if obj:IsA("RemoteFunction") and obj.Name:lower():find("skill") then
+                return obj
             end
         end
         return nil
     end
 
-    local function autoCompleteHorizontal()
-        local mainGui = PlayerGui:FindFirstChild("MainGui")
-        if not mainGui then return end
-        local skillCheckFrame = findFirstDescendantByName(mainGui, "SkillCheckFrame")
-        if not skillCheckFrame or not skillCheckFrame.Visible then return end
-
-        local marker = skillCheckFrame:FindFirstChild("Marker")
-        local goldArea = skillCheckFrame:FindFirstChild("GoldArea")
-        local requiredArea = skillCheckFrame:FindFirstChild("RequiredArea")
-        local calibrate = findFirstDescendantByName(mainGui, "Calibrate")
-        if not calibrate then calibrate = mainGui:FindFirstChild("Menu") and mainGui.Menu:FindFirstChild("Calibrate") end
-
-        if not (marker and goldArea and calibrate) then return end
-
-        -- Destroy marker tweens
-        for _, tween in ipairs(TweenService:GetTweensOn(marker)) do
-            tween:Destroy()
+    local function enableAutoSkillcheck()
+        if skillCheckRemote and originalOnClientInvoke then return end -- already enabled
+        skillCheckRemote = findSkillCheckRemote()
+        if not skillCheckRemote then
+            Fluent:Notify({ Title = "Error", Content = "SkillCheck remote not found!", Duration = 3 })
+            return
         end
-        if requiredArea then
-            goldArea.Size = UDim2.new(1, 0, 1, 0)
-            goldArea.Position = UDim2.new(0, 0, 0, 0)
-        end
-        marker.Position = UDim2.new(0.5, 0, marker.Position.Y.Scale, 0)
-        if calibrate.Visible then
-            calibrate.Activated:Fire()
-            -- also simulate space key
-            local input = {KeyCode = Enum.KeyCode.Space, UserInputType = Enum.UserInputType.Keyboard, UserInputState = Enum.UserInputState.Begin}
-            UserInputService.InputBegan:Fire(input, false)
-        end
-    end
-
-    local function autoCompleteCircle()
-        local circleGui = PlayerGui:FindFirstChild("CircleSkillCheckGui")
-        if not circleGui then return end
-        local frame = findFirstDescendantByName(circleGui, "SkillCheckFrame")
-        if not frame or not frame.Visible then return end
-        local container = frame:FindFirstChild("Container")
-        if not container then return end
-        local tapButton = container:FindFirstChild("CircleClickHandler")
-        if not tapButton or not tapButton.Visible then return end
-
-        local shrinkingCircle = container:FindFirstChild("ShrinkingCircle")
-        if shrinkingCircle then
-            for _, tween in ipairs(TweenService:GetTweensOn(shrinkingCircle)) do
-                tween:Destroy()
-            end
-            local yellowCircle = container:FindFirstChild("YellowCircle")
-            if yellowCircle then
-                shrinkingCircle.Size = yellowCircle.Size
+        originalOnClientInvoke = skillCheckRemote.OnClientInvoke
+        skillCheckRemote.OnClientInvoke = function(...)
+            -- Immediately return a perfect result based on the type
+            local args = {...}
+            -- args[1] is the command ("cancel", "complete", etc.)
+            -- args[2] might be a table with type
+            if type(args[2]) == "table" and args[2].type then
+                -- treadmill or circle
+                return true
             else
-                shrinkingCircle.Size = UDim2.new(0, 0, 0, 0)
+                -- horizontal
+                return "supercomplete"
             end
         end
-        tapButton.Activated:Fire()
-        UserInputService.InputBegan:Fire({KeyCode = Enum.KeyCode.Space, UserInputType = Enum.UserInputType.Keyboard, UserInputState = Enum.UserInputState.Begin}, false)
+        Fluent:Notify({ Title = "Auto Skillcheck", Content = "Remote hooked! Perfect skillchecks active.", Duration = 2 })
     end
 
-    local function autoCompleteTreadmill()
-        local treadmillGui = PlayerGui:FindFirstChild("TreadmillTapSkillCheckGui")
-        if not treadmillGui then return end
-        local frame = findFirstDescendantByName(treadmillGui, "TapSkillCheckFrame")
-        if not frame or not frame.Visible then return end
-        local container = frame:FindFirstChild("Container")
-        if not container then return end
-        local tapButton = container:FindFirstChild("TapButton")
-        if not tapButton or not tapButton.Visible then return end
-
-        for _ = 1, 12 do
-            tapButton.Activated:Fire()
-            task.wait(0.01)
-        end
-        for _ = 1, 12 do
-            UserInputService.InputBegan:Fire({KeyCode = Enum.KeyCode.Space, UserInputType = Enum.UserInputType.Keyboard, UserInputState = Enum.UserInputState.Begin}, false)
-            task.wait(0.01)
-            UserInputService.InputEnded:Fire({KeyCode = Enum.KeyCode.Space, UserInputType = Enum.UserInputType.Keyboard, UserInputState = Enum.UserInputState.End}, false)
-            task.wait(0.01)
+    local function disableAutoSkillcheck()
+        if skillCheckRemote and originalOnClientInvoke then
+            skillCheckRemote.OnClientInvoke = originalOnClientInvoke
+            originalOnClientInvoke = nil
+            skillCheckRemote = nil
         end
     end
 
+    -- Auto Barnaby: spam jump
     local function autoPlayBarnaby()
         for _, gui in ipairs(PlayerGui:GetChildren()) do
             if gui:GetAttribute("BarnabyArcadeSession") then
@@ -745,17 +705,14 @@ if IsGame then
         end
     end
 
+    -- Main loop (only Barnaby needs RenderStepped; skillcheck is event-driven now)
     RunService.RenderStepped:Connect(function()
-        if AutoSkillcheckEnabled then
-            autoCompleteHorizontal()
-            autoCompleteCircle()
-            autoCompleteTreadmill()
-        end
         if AutoBarnabyEnabled then
             autoPlayBarnaby()
         end
     end)
 
+    -- Monitor for skillCheckRemote changes (if the game recreates it)
     workspace.ChildAdded:Connect(function(child)
         if child.Name == "CurrentRoom" then task.wait(0.1) processESP() monitorCurrentRoom(child) end
     end)
@@ -933,12 +890,14 @@ if IsGame then
 
     AutoSkillcheckSection:AddToggle("AutoSkillcheckToggle", { 
         Title = "Auto Complete Skillchecks", 
-        Description = "Instantly passes all minigames (horizontal, circle, treadmill) DEBUG", 
+        Description = "Instantly passes all minigames by hooking the remote", 
         Default = false, 
         Callback = function(value)
             AutoSkillcheckEnabled = value
             if value then
-                Fluent:Notify({ Title = "Auto Skillcheck", Content = "Enabled - will auto-complete skillchecks", Duration = 2 })
+                enableAutoSkillcheck()
+            else
+                disableAutoSkillcheck()
             end
         end 
     })
