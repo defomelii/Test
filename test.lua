@@ -651,17 +651,21 @@ local function autoCompleteSkillcheck()
     local skillCheckFrame = menu:FindFirstChild("SkillCheckFrame")
     if not skillCheckFrame or not skillCheckFrame.Visible then return end
 
-    local marker = skillCheckFrame:FindFirstChild("Marker")
+    local requiredArea = skillCheckFrame:FindFirstChild("RequiredArea")
     local goldArea = skillCheckFrame:FindFirstChild("GoldArea")
+    if requiredArea and goldArea then
+        goldArea.Size = UDim2.new(1, 0, 1, 0) 
+        goldArea.Position = UDim2.new(0, 0, 0, 0) 
+    end
+
+    local marker = skillCheckFrame:FindFirstChild("Marker")
+    if marker then
+        marker.Position = UDim2.new(0.5, 0, marker.Position.Y.Scale, 0)
+    end
+
     local calibrate = menu:FindFirstChild("Calibrate")
-
-    if marker and goldArea and calibrate then
-        local goldCenter = goldArea.Position.X.Scale + (goldArea.Size.X.Scale / 2)
-        marker.Position = UDim2.new(goldCenter, 0, marker.Position.Y.Scale, 0)
-
-        if calibrate.Visible then
-            calibrate.Activated:Fire()
-        end
+    if calibrate and calibrate.Visible then
+        calibrate.Activated:Fire()
     end
 end
 
