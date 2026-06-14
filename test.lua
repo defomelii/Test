@@ -645,129 +645,92 @@ if IsGame then
         table.clear(DisabledColliders)
     end
 
-    -- ================== AUTO SKILLCHECK SYSTEM (WITH DEBUG) ==================
-    local function debugPrint(msg)
-        -- Use a GUI notification that's visible on screen
-        local success, err = pcall(function()
-            Fluent:Notify({ Title = "Debug", Content = msg, Duration = 2 })
-        end)
-        if not success then
-            print("[GigiHub Debug] " .. msg)
+    -- ================== AUTO SKILLCHECK (FIXED DETECTION) ==================
+    local function findFirstDescendantByName(parent, name)
+        for _, child in ipairs(parent:GetDescendants()) do
+            if child.Name == name then
+                return child
+            end
         end
+        return nil
     end
 
     local function autoCompleteHorizontal()
         local mainGui = PlayerGui:FindFirstChild("MainGui")
         if not mainGui then return end
-        local menu = mainGui:FindFirstChild("Menu")
-        if not menu then return end
-
-        local skillCheckFrame = menu:FindFirstChild("SkillCheckFrame")
-        if not skillCheckFrame then return end
-        if not skillCheckFrame.Visible then return end
-
-        debugPrint("Horizontal skillcheck detected!")
+        local skillCheckFrame = findFirstDescendantByName(mainGui, "SkillCheckFrame")
+        if not skillCheckFrame or not skillCheckFrame.Visible then return end
 
         local marker = skillCheckFrame:FindFirstChild("Marker")
         local goldArea = skillCheckFrame:FindFirstChild("GoldArea")
         local requiredArea = skillCheckFrame:FindFirstChild("RequiredArea")
-        local calibrate = menu:FindFirstChild("Calibrate")
+        local calibrate = findFirstDescendantByName(mainGui, "Calibrate")
+        if not calibrate then calibrate = mainGui:FindFirstChild("Menu") and mainGui.Menu:FindFirstChild("Calibrate") end
 
-        if not marker then debugPrint("Marker missing") return end
-        if not goldArea then debugPrint("GoldArea missing") return end
-        if not calibrate then debugPrint("Calibrate missing") return end
+        if not (marker and goldArea and calibrate) then return end
 
-        local tweens = TweenService:GetTweensOn(marker)
-        for _, tween in ipairs(tweens) do
+        -- Destroy marker tweens
+        for _, tween in ipairs(TweenService:GetTweensOn(marker)) do
             tween:Destroy()
         end
-        debugPrint("Destroyed " .. #tweens .. " tweens on marker")
-
         if requiredArea then
             goldArea.Size = UDim2.new(1, 0, 1, 0)
             goldArea.Position = UDim2.new(0, 0, 0, 0)
         end
-
         marker.Position = UDim2.new(0.5, 0, marker.Position.Y.Scale, 0)
-
         if calibrate.Visible then
-            debugPrint("Firing Calibrate button")
             calibrate.Activated:Fire()
-            task.spawn(function()
-                local fakeInput = {
-                    KeyCode = Enum.KeyCode.Space,
-                    UserInputType = Enum.UserInputType.Keyboard,
-                    UserInputState = Enum.UserInputState.Begin
-                }
-                UserInputService.InputBegan:Fire(fakeInput, false)
-            end)
-            debugPrint("Skillcheck auto-completed!")
-        else
-            debugPrint("Calibrate not visible")
+            -- also simulate space key
+            local input = {KeyCode = Enum.KeyCode.Space, UserInputType = Enum.UserInputType.Keyboard, UserInputState = Enum.UserInputState.Begin}
+            UserInputService.InputBegan:Fire(input, false)
         end
     end
 
     local function autoCompleteCircle()
-        for _, gui in ipairs(PlayerGui:GetChildren()) do
-            if gui.Name == "CircleSkillCheckGui" then
-                local frame = gui:FindFirstChild("SkillCheckFrame")
-                if frame and frame.Visible then
-                    debugPrint("Circle skillcheck detected!")
-                    local container = frame:FindFirstChild("Container")
-                    if container then
-                        local tapButton = container:FindFirstChild("CircleClickHandler")
-                        if tapButton and tapButton.Visible then
-                            local shrinkingCircle = container:FindFirstChild("ShrinkingCircle")
-                            if shrinkingCircle then
-                                local tweens = TweenService:GetTweensOn(shrinkingCircle)
-                                for _, tween in ipairs(tweens) do
-                                    tween:Destroy()
-                                end
-                                local yellowCircle = container:FindFirstChild("YellowCircle")
-                                if yellowCircle then
-                                    shrinkingCircle.Size = yellowCircle.Size
-                                else
-                                    shrinkingCircle.Size = UDim2.new(0, 0, 0, 0)
-                                end
-                            end
-                            tapButton.Activated:Fire()
-                            task.wait(0.02)
-                            UserInputService.InputBegan:Fire({KeyCode = Enum.KeyCode.Space, UserInputType = Enum.UserInputType.Keyboard, UserInputState = Enum.UserInputState.Begin}, false)
-                            debugPrint("Circle skillcheck auto-completed!")
-                            return
-                        end
-                    end
-                end
+        local circleGui = PlayerGui:FindFirstChild("CircleSkillCheckGui")
+        if not circleGui then return end
+        local frame = findFirstDescendantByName(circleGui, "SkillCheckFrame")
+        if not frame or not frame.Visible then return end
+        local container = frame:FindFirstChild("Container")
+        if not container then return end
+        local tapButton = container:FindFirstChild("CircleClickHandler")
+        if not tapButton or not tapButton.Visible then return end
+
+        local shrinkingCircle = container:FindFirstChild("ShrinkingCircle")
+        if shrinkingCircle then
+            for _, tween in ipairs(TweenService:GetTweensOn(shrinkingCircle)) do
+                tween:Destroy()
+            end
+            local yellowCircle = container:FindFirstChild("YellowCircle")
+            if yellowCircle then
+                shrinkingCircle.Size = yellowCircle.Size
+            else
+                shrinkingCircle.Size = UDim2.new(0, 0, 0, 0)
             end
         end
+        tapButton.Activated:Fire()
+        UserInputService.InputBegan:Fire({KeyCode = Enum.KeyCode.Space, UserInputType = Enum.UserInputType.Keyboard, UserInputState = Enum.UserInputState.Begin}, false)
     end
 
     local function autoCompleteTreadmill()
-        for _, gui in ipairs(PlayerGui:GetChildren()) do
-            if gui.Name == "TreadmillTapSkillCheckGui" then
-                local frame = gui:FindFirstChild("TapSkillCheckFrame")
-                if frame and frame.Visible then
-                    debugPrint("Treadmill skillcheck detected!")
-                    local container = frame:FindFirstChild("Container")
-                    if container then
-                        local tapButton = container:FindFirstChild("TapButton")
-                        if tapButton and tapButton.Visible then
-                            for i = 1, 12 do
-                                tapButton.Activated:Fire()
-                                task.wait(0.01)
-                            end
-                            for i = 1, 12 do
-                                UserInputService.InputBegan:Fire({KeyCode = Enum.KeyCode.Space, UserInputType = Enum.UserInputType.Keyboard, UserInputState = Enum.UserInputState.Begin}, false)
-                                task.wait(0.01)
-                                UserInputService.InputEnded:Fire({KeyCode = Enum.KeyCode.Space, UserInputType = Enum.UserInputType.Keyboard, UserInputState = Enum.UserInputState.End}, false)
-                                task.wait(0.01)
-                            end
-                            debugPrint("Treadmill skillcheck auto-completed!")
-                            return
-                        end
-                    end
-                end
-            end
+        local treadmillGui = PlayerGui:FindFirstChild("TreadmillTapSkillCheckGui")
+        if not treadmillGui then return end
+        local frame = findFirstDescendantByName(treadmillGui, "TapSkillCheckFrame")
+        if not frame or not frame.Visible then return end
+        local container = frame:FindFirstChild("Container")
+        if not container then return end
+        local tapButton = container:FindFirstChild("TapButton")
+        if not tapButton or not tapButton.Visible then return end
+
+        for _ = 1, 12 do
+            tapButton.Activated:Fire()
+            task.wait(0.01)
+        end
+        for _ = 1, 12 do
+            UserInputService.InputBegan:Fire({KeyCode = Enum.KeyCode.Space, UserInputType = Enum.UserInputType.Keyboard, UserInputState = Enum.UserInputState.Begin}, false)
+            task.wait(0.01)
+            UserInputService.InputEnded:Fire({KeyCode = Enum.KeyCode.Space, UserInputType = Enum.UserInputType.Keyboard, UserInputState = Enum.UserInputState.End}, false)
+            task.wait(0.01)
         end
     end
 
@@ -970,10 +933,13 @@ if IsGame then
 
     AutoSkillcheckSection:AddToggle("AutoSkillcheckToggle", { 
         Title = "Auto Complete Skillchecks", 
-        Description = "Instantly passes all minigames (horizontal, circle, treadmill)", 
+        Description = "Instantly passes all minigames (horizontal, circle, treadmill) DEBUG", 
         Default = false, 
         Callback = function(value)
             AutoSkillcheckEnabled = value
+            if value then
+                Fluent:Notify({ Title = "Auto Skillcheck", Content = "Enabled - will auto-complete skillchecks", Duration = 2 })
+            end
         end 
     })
 
